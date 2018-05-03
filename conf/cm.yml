@@ -10,6 +10,8 @@ write_files:
     UID_DOMAIN = bi.uni-freiburg.de
     TRUST_UID_DOMAIN = True
     SOFT_UID_DOMAIN = True
+    LOWPORT = 12000
+    HIGHPORT = 12000
   owner: root:root
   path: /etc/condor/condor_config.local
   permissions: '0644'
