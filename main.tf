@@ -4,10 +4,7 @@ resource "openstack_compute_instance_v2" "test-cm" {
 	image_name      = "test-vgcn-general"
 	key_pair        = "cloud2"
 	security_groups = [
-		"public-web",
-		"public-ssh",
-		"public-ping",
-		"Public",
+		"ingress-public",
 		"egress",
 	]
 	network         = [
@@ -30,22 +27,11 @@ resource "openstack_compute_instance_v2" "test-exec-1" {
 	image_name      = "test-vgcn-general"
 	key_pair        = "cloud2"
 	security_groups = [
-		"public-web",
-		"public-ssh",
-		"public-ping",
-		"Public",
+		"ingress-public",
 		"egress",
 	]
 	network         = [
 		{ name = "galaxy-net" },
 	],
 	user_data = "${file("conf/exec.yml")}"
-}
-
-resource "aws_route53_record" "test-exec-1" {
-	zone_id = "Z3BOXJYLR7ZV7D"
-	name    = "exec-01.condor.usegalaxy.eu"
-	type    = "A"
-	ttl     = "300"
-	records = ["${openstack_compute_instance_v2.test-exec-1.access_ip_v4}"]
 }
