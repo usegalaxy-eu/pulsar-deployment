@@ -1,0 +1,2 @@
+main:
+	terraform apply
