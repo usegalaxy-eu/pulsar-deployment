@@ -7,7 +7,7 @@ resource "openstack_compute_instance_v2" "test-cm" {
 		"public-web",
 		"public-ssh",
 		"public-ping",
-		"public-condor",
+		"Public",
 		"egress",
 	]
 	network         = [
@@ -33,7 +33,7 @@ resource "openstack_compute_instance_v2" "test-exec-1" {
 		"public-web",
 		"public-ssh",
 		"public-ping",
-		"public-condor",
+		"Public",
 		"egress",
 	]
 	network         = [

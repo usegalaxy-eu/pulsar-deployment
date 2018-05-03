@@ -11,8 +11,6 @@ write_files:
     ALLOW_DAEMON = $(ALLOW_ADMINISTRATOR)
     ALLOW_OWNER = $(ALLOW_ADMINISTRATOR)
     ALLOW_CLIENT = *
-    LOWPORT = 12000
-    HIGHPORT = 12000
     DAEMON_LIST = MASTER, SCHEDD, STARTD
     FILESYSTEM_DOMAIN = bi.uni-freiburg.de
     UID_DOMAIN = bi.uni-freiburg.de

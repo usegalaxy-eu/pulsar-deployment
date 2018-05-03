@@ -1,2 +1,2 @@
 main:
-	terraform apply
+	yes yes | terraform apply
