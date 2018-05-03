@@ -34,7 +34,6 @@ resource "openstack_compute_instance_v2" "test-exec-1" {
 		"public-ssh",
 		"public-ping",
 		"public-condor",
-		"public-condor",
 		"egress",
 	]
 	network         = [
