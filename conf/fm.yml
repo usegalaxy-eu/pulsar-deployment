@@ -11,7 +11,7 @@ write_files:
     TRUST_UID_DOMAIN = True
     SOFT_UID_DOMAIN = True
     # Flocking
-    FLOCK_TO = manager01.condor.usegalaxy,manager02.condor.usegalaxy
+    FLOCK_TO = manager01.condor.usegalaxy.eu,manager02.condor.usegalaxy.eu
     FLOCK_COLLECTOR_HOSTS = $(FLOCK_TO)
     FLOCK_NEGOTIATOR_HOSTS = $(FLOCK_TO)
     HOSTALLOW_NEGOTIATOR_SCHEDD = $(COLLECTOR_HOST), $(FLOCK_NEGOTIATOR_HOSTS)
