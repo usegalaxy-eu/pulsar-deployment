@@ -2,7 +2,7 @@
 write_files:
 - content: |
     ETC = /etc/condor
-    CONDOR_HOST = manager.condor.usegalaxy.eu
+    CONDOR_HOST = manager01.condor.usegalaxy.eu
     ALLOW_WRITE = 10.5.68.0/24, 10.19.0.0/16, 132.230.68.0/24, *.bi.uni-freiburg.de
     ALLOW_READ = $(ALLOW_WRITE)
     ALLOW_ADMINISTRATOR = 10.5.68.0/24, 10.19.0.0/16
