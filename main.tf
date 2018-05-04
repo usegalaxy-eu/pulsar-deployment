@@ -1,7 +1,7 @@
 resource "openstack_compute_instance_v2" "test-flock-manager" {
 	name            = "test-flock-manager"
 	flavor_name     = "m1.medium"
-	image_name      = "test-vgcn-general"
+	image_name      = "auto-vgcn-origin/passordless-jenkins13"
 	key_pair        = "cloud2"
 	security_groups = [
 		"ingress-public",
@@ -24,7 +24,7 @@ resource "aws_route53_record" "fm" {
 resource "openstack_compute_instance_v2" "test-cm" {
 	name            = "test-cm"
 	flavor_name     = "m1.medium"
-	image_name      = "test-vgcn-general"
+	image_name      = "auto-vgcn-origin/passordless-jenkins13"
 	key_pair        = "cloud2"
 	security_groups = [
 		"ingress-public",
@@ -47,7 +47,7 @@ resource "aws_route53_record" "cm" {
 resource "openstack_compute_instance_v2" "test-exec-1" {
 	name            = "test-exec-1"
 	flavor_name     = "m1.medium"
-	image_name      = "test-vgcn-general"
+	image_name      = "auto-vgcn-origin/passordless-jenkins13"
 	key_pair        = "cloud2"
 	security_groups = [
 		"ingress-public",
@@ -63,7 +63,7 @@ resource "openstack_compute_instance_v2" "test-exec-1" {
 resource "openstack_compute_instance_v2" "test-cm-alt" {
 	name            = "test-cm-alt"
 	flavor_name     = "m1.medium"
-	image_name      = "test-vgcn-general"
+	image_name      = "auto-vgcn-origin/passordless-jenkins13"
 	key_pair        = "cloud2"
 	security_groups = [
 		"ingress-public",
@@ -86,7 +86,7 @@ resource "aws_route53_record" "cm-alt" {
 resource "openstack_compute_instance_v2" "test-exec-2" {
 	name            = "test-exec-2"
 	flavor_name     = "m1.medium"
-	image_name      = "test-vgcn-general"
+	image_name      = "auto-vgcn-origin/passordless-jenkins13"
 	key_pair        = "cloud2"
 	security_groups = [
 		"ingress-public",
