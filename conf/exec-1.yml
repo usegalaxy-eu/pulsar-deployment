@@ -49,7 +49,7 @@ write_files:
     /data           /etc/auto.data          nfsvers=3
     /usr/local      /etc/auto.usrlocal      nfsvers=3
   owner: root:root
-  path: /etc/auto.master
+  path: /etc/auto.master.d/data.autofs
   permissions: '0644'
 - content: |
     0       -rw,hard,intr,nosuid,quota      sn01.bi.uni-freiburg.de:/export/data3/galaxy/net/data/&
