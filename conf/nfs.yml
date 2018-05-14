@@ -1,0 +1,22 @@
+#cloud-config
+write_files:
+- content: |
+    /data           /etc/auto.data          nfsvers=3
+  owner: root:root
+  path: /etc/auto.master
+  permissions: '0644'
+- content: |
+    share  -rw,hard,intr,nosuid,quota  nfs.condor.usegalaxy.eu:/export/data
+  owner: root:root
+  path: /etc/auto.data
+  permissions: '0644'
+- content: |
+    /export/share *(rw,sync)
+  owner: root:root
+  path: /etc/exports
+  permissions: '0644'
+
+runcmd:
+ - [ systemctl, enable, nfs-server ]
+ - [ systemctl, start, nfs-server ]
+ - [ exportfs, -avr ]
