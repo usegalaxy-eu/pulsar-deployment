@@ -51,7 +51,7 @@ write_files:
   path: /etc/auto.master
   permissions: '0644'
 - content: |
-    share  -rw,hard,intr,nosuid,quota  nfs.condor.usegalaxy.eu:/export/data
+    share  -rw,hard,intr,nosuid,quota  nfs.condor.usegalaxy.eu:/export/share
   owner: root:root
   path: /etc/auto.data
   permissions: '0644'
