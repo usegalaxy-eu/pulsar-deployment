@@ -1,6 +1,6 @@
 resource "openstack_networking_secgroup_v2" "ingress-public" {
-  name        = "ingress-public"
-  description = "Allow any incoming connection"
+  name                 = "ingress-public"
+  description          = "Allow any incoming connection"
   delete_default_rules = true
 }
 
@@ -17,8 +17,8 @@ resource "openstack_networking_secgroup_rule_v2" "ingress-public-6" {
 }
 
 resource "openstack_networking_secgroup_v2" "egress-public" {
-  name        = "egress-public"
-  description = "Allow any outgoing connection"
+  name                 = "egress-public"
+  description          = "Allow any outgoing connection"
   delete_default_rules = true
 }
 
@@ -33,6 +33,3 @@ resource "openstack_networking_secgroup_rule_v2" "egress-public-6" {
   ethertype         = "IPv6"
   security_group_id = "${openstack_networking_secgroup_v2.egress-public.id}"
 }
-
-
-

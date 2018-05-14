@@ -7,14 +7,16 @@ variable "key_pair" {
 }
 
 variable "secgroups" {
-	default = [
-		"ingress-public",
-		"egress"
-	]
+  default = [
+    "ingress-public",
+    "egress",
+  ]
 }
 
 variable "network" {
-	default = [
-		{ name = "galaxy-net" }
-	]
+  default = [
+    {
+      name = "galaxy-net"
+    },
+  ]
 }
