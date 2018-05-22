@@ -1,5 +1,5 @@
 variable "image" {
-  default = "vggp-v29-j31-2ceb08399fa7-passordless"
+  default = "vggp-v29-j34-11c38f1ccfca-passordless"
 }
 
 variable "name_prefix" {
@@ -16,8 +16,8 @@ variable "key_pair" {
 
 variable "secgroups" {
   default = [
-    "ingress-public",
-    "egress",
+    "vgcn-ingress-public",
+    "vgcn-egress-public",
   ]
 }
 

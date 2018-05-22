@@ -1,28 +1,3 @@
-resource "openstack_compute_instance_v2" "nfs-server" {
-  name            = "${var.name_prefix}nfs${var.name_suffix}"
-  flavor_name     = "m1.medium"
-  image_name      = "${var.image}"
-  key_pair        = "${var.key_pair}"
-  security_groups = "${var.secgroups}"
-  network         = "${var.network}"
-
-  user_data = <<-EOF
-    #cloud-config
-    write_files:
-    - content: |
-        /data/share *(rw,sync)
-      owner: root:root
-      path: /etc/exports
-      permissions: '0644'
-
-    runcmd:
-     - [ mkdir, -p, /data/share ]
-     - [ systemctl, enable, nfs-server ]
-     - [ systemctl, start, nfs-server ]
-     - [ exportfs, -avr ]
-  EOF
-}
-
 resource "openstack_compute_instance_v2" "central-manager" {
   name            = "${var.name_prefix}central-manager${var.name_suffix}"
   flavor_name     = "m1.tiny"
@@ -50,7 +25,7 @@ resource "openstack_compute_instance_v2" "central-manager" {
     - content: |
         /data           /etc/auto.data          nfsvers=3
       owner: root:root
-      path: /etc/auto.master
+      path: /etc/auto.master.d/data.autofs
       permissions: '0644'
     - content: |
         share  -rw,hard,intr,nosuid,quota  ${openstack_compute_instance_v2.nfs-server.access_ip_v4}:/data/share
@@ -101,7 +76,7 @@ resource "openstack_compute_instance_v2" "exec-node" {
     - content: |
         /data           /etc/auto.data          nfsvers=3
       owner: root:root
-      path: /etc/auto.master
+      path: /etc/auto.master.d/data.autofs
       permissions: '0644'
     - content: |
         share  -rw,hard,intr,nosuid,quota  ${openstack_compute_instance_v2.nfs-server.access_ip_v4}:/data/share

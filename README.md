@@ -1,11 +1,17 @@
 # UseGalaxy.eu VGCN Terraform Plan
 
-We've started using terraform to deploy our virtual galaxy compute nodes into
-an entire HTCondor cluster automatically.
+We've built  "virtual galaxy compute nodes" (VGCN), a single very generic image
+which has all of the required components (docker, singularity, autofs, CVMFS)
+to act as a galaxy compute node as part of a condor cluster. The terraform
+plans in this repository define how these images can be deployed to OpenStack.
+
+When you deploy this onto your OpenStack, this is just a normal HTCondor
+cluster + NFS Server. The NFS server is included by default, but you can remove
+it and point the compute nodes at your own NFS server.
 
 The terraform file defines three "resources":
 
-- an NFS server (does not use volumes currently, as this is a demo and not for production without changes)
+- an NFS server (does not use volumes currently, as this is a demo and not for production without changes. You can replace this with your own NFS server)
 - a central manager
 - an exec node
 
@@ -17,6 +23,8 @@ into the `vars.tf` file where you can change them as you need.
 - An OpenStack Deployment where you want to launch VGCN
 - API access to this OpenStack
 - [Terraform](https://www.terraform.io/intro/getting-started/install.html)
+- The latest VGGP image ([from us](https://usegalaxy.eu/static/vgcn/), or [compiled yourself](https://github.com/usegalaxy-eu/vgcn/tree/passordless))
+- (Optional) A Galaxy instance which will use this cluster
 
 ## Setup
 
@@ -32,6 +40,25 @@ export OS_TENANT_ID=...
 export OS_USERNAME=...
 ```
 
+You'll need to upload a VGCN image to your openstack, prebuilt versions are
+supplied [by UseGalaxy.eu](https://usegalaxy.eu/static/vgcn/).
+
+Next you'll want to customize some of the variables in [`vars.tf`](./vars.tf).
+
+Variable      | Default Value   | Purpose
+--------      | -------------   | -------
+image         | vggp....        | The name of the image in your openstack image list
+`name_prefix` | `vgcn-`         | Prefixed to the name of the VMs that are launched
+`name_suffix` | `.usegalaxy.eu` | This defaults to our domain, images do not need to be named as FQDNs but if you're using any sort of automated OpenStack DNS solution this can make things easier.
+`key_pair`    | `cloud2`        | OpenStack keypair name that you will use to access VMs
+`secgroups`   | ...             | We have built some default rules for network access. Currently these are extremely broad, we may change that in the future. Alternatively you can supply your own preferred security groups here.
+`network`     | `galaxy-net`    | The network to launch images in.
+
+If you want to disable the built-in NFS server and supply your own, simply:
+
+1. Delete `nfs.tf`
+2. Change every autofs entry to point to your mount points and your NFS
+   server's name/ip address.
 
 ## Launching the VGCN Cluster
 
@@ -83,6 +110,8 @@ terraform apply
         </destinations>
     </job_conf>
     ```
+
+5. Galaxy should store files on the NFS server that is being used, so the cluster has access to it.
 
 ## LICENSE
 
