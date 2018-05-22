@@ -4,6 +4,9 @@ We've built  "virtual galaxy compute nodes" (VGCN), a single very generic image
 which has all of the required components (docker, singularity, autofs, CVMFS)
 to act as a galaxy compute node as part of a condor cluster. The terraform
 plans in this repository define how these images can be deployed to OpenStack.
+You can read more about [terraform on their site.](https://www.terraform.io/)
+We use it in lieu of manually launching VMs on openstack or ansible/custom
+scripts to launch VMs since those do not provide a declarative workflow.
 
 When you deploy this onto your OpenStack, this is just a normal HTCondor
 cluster + NFS Server. The NFS server is included by default, but you can remove
