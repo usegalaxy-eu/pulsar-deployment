@@ -1,5 +1,4 @@
 resource "openstack_compute_instance_v2" "nfs-server" {
-  depends_on      = ["openstack_images_image_v2.vggp"]
   name            = "${var.name_prefix}nfs${var.name_suffix}"
   flavor_name     = "m1.medium"
   image_name      = "${var.image}"
@@ -17,6 +16,7 @@ resource "openstack_compute_instance_v2" "nfs-server" {
       permissions: '0644'
 
     runcmd:
+     - [ mkdir, -p, /data/share ]
      - [ systemctl, enable, nfs-server ]
      - [ systemctl, start, nfs-server ]
      - [ exportfs, -avr ]
@@ -24,7 +24,6 @@ resource "openstack_compute_instance_v2" "nfs-server" {
 }
 
 resource "openstack_compute_instance_v2" "central-manager" {
-  depends_on      = ["openstack_images_image_v2.vggp"]
   name            = "${var.name_prefix}central-manager${var.name_suffix}"
   flavor_name     = "m1.tiny"
   image_name      = "${var.image}"
@@ -62,7 +61,6 @@ resource "openstack_compute_instance_v2" "central-manager" {
 }
 
 resource "openstack_compute_instance_v2" "exec-node" {
-  depends_on      = ["openstack_images_image_v2.vggp"]
   count           = 2
   name            = "${var.name_prefix}exec-node-${count.index}${var.name_suffix}"
   flavor_name     = "m1.medium"

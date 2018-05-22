@@ -3,10 +3,11 @@ variable "image" {
 }
 
 variable "name_prefix" {
-default = "vgcn-"
+  default = "vgcn-"
 }
+
 variable "name_suffix" {
-default = ".usegalaxy.eu"
+  default = ".usegalaxy.eu"
 }
 
 variable "key_pair" {
