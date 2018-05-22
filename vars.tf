@@ -1,5 +1,12 @@
 variable "image" {
-  default = "vggp-v29-03695915f527-j28-passordless"
+  default = "vggp-v29-j31-2ceb08399fa7-passordless"
+}
+
+variable "name_prefix" {
+default = "vgcn-"
+}
+variable "name_suffix" {
+default = ".usegalaxy.eu"
 }
 
 variable "key_pair" {

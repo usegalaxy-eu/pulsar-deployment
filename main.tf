@@ -1,11 +1,13 @@
 resource "openstack_compute_instance_v2" "nfs-server" {
-  name            = "test-nfs"
+  depends_on      = ["openstack_images_image_v2.vggp"]
+  name            = "${var.name_prefix}nfs${var.name_suffix}"
   flavor_name     = "m1.medium"
   image_name      = "${var.image}"
   key_pair        = "${var.key_pair}"
   security_groups = "${var.secgroups}"
   network         = "${var.network}"
-  user_data       = <<-EOF
+
+  user_data = <<-EOF
     #cloud-config
     write_files:
     - content: |
@@ -22,18 +24,20 @@ resource "openstack_compute_instance_v2" "nfs-server" {
 }
 
 resource "openstack_compute_instance_v2" "central-manager" {
-  name            = "vgcn-central-manager"
+  depends_on      = ["openstack_images_image_v2.vggp"]
+  name            = "${var.name_prefix}central-manager${var.name_suffix}"
   flavor_name     = "m1.tiny"
   image_name      = "${var.image}"
   key_pair        = "${var.key_pair}"
   security_groups = "${var.secgroups}"
   network         = "${var.network}"
-  user_data       = <<-EOF
+
+  user_data = <<-EOF
     #cloud-config
     write_files:
     - content: |
         CONDOR_HOST = localhost
-        ALLOW_WRITE = 10.5.68.0/24, 10.19.0.0/16, 132.230.68.0/24, *.bi.uni-freiburg.de
+        ALLOW_WRITE = *
         ALLOW_READ = $(ALLOW_WRITE)
         ALLOW_NEGOTIATOR = $(ALLOW_WRITE)
         DAEMON_LIST = COLLECTOR, MASTER, NEGOTIATOR, SCHEDD
@@ -58,21 +62,23 @@ resource "openstack_compute_instance_v2" "central-manager" {
 }
 
 resource "openstack_compute_instance_v2" "exec-node" {
+  depends_on      = ["openstack_images_image_v2.vggp"]
   count           = 2
-  name            = "vgcn-exec-node-${count.index}"
+  name            = "${var.name_prefix}exec-node-${count.index}${var.name_suffix}"
   flavor_name     = "m1.medium"
   image_name      = "${var.image}"
   key_pair        = "${var.key_pair}"
   security_groups = "${var.secgroups}"
   network         = "${var.network}"
-  user_data       = <<-EOF
+
+  user_data = <<-EOF
     #cloud-config
     write_files:
     - content: |
-        CONDOR_HOST = ${openstack_compute_instance_v2.test-cm.access_ip_v4}
-        ALLOW_WRITE = 10.5.68.0/24, 10.19.0.0/16, 132.230.68.0/24, *.bi.uni-freiburg.de
+        CONDOR_HOST = ${openstack_compute_instance_v2.central-manager.access_ip_v4}
+        ALLOW_WRITE = *
         ALLOW_READ = $(ALLOW_WRITE)
-        ALLOW_ADMINISTRATOR = 10.5.68.0/24, 10.19.0.0/16
+        ALLOW_ADMINISTRATOR = *
         ALLOW_NEGOTIATOR = $(ALLOW_ADMINISTRATOR)
         ALLOW_CONFIG = $(ALLOW_ADMINISTRATOR)
         ALLOW_DAEMON = $(ALLOW_ADMINISTRATOR)
