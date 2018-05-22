@@ -1,5 +1,5 @@
 variable "image" {
-  default = "vggp-v29-3472699b14b5-j24-passordless"
+  default = "vggp-v29-03695915f527-j28-passordless"
 }
 
 variable "key_pair" {

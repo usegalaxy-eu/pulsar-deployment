@@ -21,3 +21,6 @@ write_files:
   owner: root:root
   path: /etc/condor/condor_config.local
   permissions: '0644'
+
+#runcmd:
+ #- [ /bin/bash, /usr/sbin/vault-ssh-sign ]

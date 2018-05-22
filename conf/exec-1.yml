@@ -55,3 +55,6 @@ write_files:
   owner: root:root
   path: /etc/auto.data
   permissions: '0644'
+
+#runcmd:
+ #- [ /bin/bash, /usr/sbin/vault-ssh-sign ]

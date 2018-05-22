@@ -10,3 +10,4 @@ runcmd:
  - [ systemctl, enable, nfs-server ]
  - [ systemctl, start, nfs-server ]
  - [ exportfs, -avr ]
+ #- [ /bin/bash, /usr/sbin/vault-ssh-sign ]
