@@ -83,3 +83,7 @@ terraform apply
         </destinations>
     </job_conf>
     ```
+
+## LICENSE
+
+GPL
