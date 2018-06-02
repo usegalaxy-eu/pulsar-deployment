@@ -1,6 +1,6 @@
 resource "openstack_networking_secgroup_v2" "public-irc" {
   name        = "public-irc"
-  description = ""
+  description = "[tf] Allow incoming IRC connections"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "6179ae32-e3c4-4a8c-a05a-a45bdd7872f3" {

@@ -1,6 +1,6 @@
 resource "openstack_networking_secgroup_v2" "public-mosh" {
   name        = "public-mosh"
-  description = "public-mosh"
+  description = "[tf] Rules for mosh servers"
 }
 
 
