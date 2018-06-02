@@ -1,4 +1,4 @@
-resource "openstack_compute_instance_v2" "usegalaxy-gitlab" {
+resource "openstack_compute_instance_v2" "gitlab" {
   name            = "usegalaxy.eu-gitlab"
   image_name      = "Ubuntu Server 16.04 RAW"
   flavor_name     = "m1.large"
