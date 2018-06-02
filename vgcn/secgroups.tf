@@ -1,5 +1,5 @@
 resource "openstack_networking_secgroup_v2" "ingress-public" {
-  name                 = "ingress-public"
+  name                 = "vgcn-ingress-public"
   description          = "Allow any incoming connection"
   delete_default_rules = true
 }
@@ -17,7 +17,7 @@ resource "openstack_networking_secgroup_rule_v2" "ingress-public-6" {
 }
 
 resource "openstack_networking_secgroup_v2" "egress-public" {
-  name                 = "egress-public"
+  name                 = "vgcn-egress-public"
   description          = "Allow any outgoing connection"
   delete_default_rules = true
 }

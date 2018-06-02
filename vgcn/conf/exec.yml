@@ -2,7 +2,7 @@
 write_files:
 - content: |
     ETC = /etc/condor
-    CONDOR_HOST = manager02.condor.usegalaxy.eu
+    CONDOR_HOST = manager.vgcn.usegalaxy.eu
     ALLOW_WRITE = 10.5.68.0/24, 10.19.0.0/16, 132.230.68.0/24, *.bi.uni-freiburg.de
     ALLOW_READ = $(ALLOW_WRITE)
     ALLOW_ADMINISTRATOR = 10.5.68.0/24, 10.19.0.0/16
@@ -48,10 +48,10 @@ write_files:
 - content: |
     /data           /etc/auto.data          nfsvers=3
   owner: root:root
-  path: /etc/auto.master
+  path: /etc/auto.master.d/data.autofs
   permissions: '0644'
 - content: |
-    share  -rw,hard,intr,nosuid,quota  nfs.condor.usegalaxy.eu:/export/share
+    share  -rw,hard,intr,nosuid,quota  nfs.vgcn.usegalaxy.eu:/export/share
   owner: root:root
   path: /etc/auto.data
   permissions: '0644'

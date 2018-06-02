@@ -1,7 +1,7 @@
 #cloud-config
 write_files:
 - content: |
-    CONDOR_HOST = manager02.condor.usegalaxy.eu
+    CONDOR_HOST = manager.vgcn.usegalaxy.eu
     ALLOW_WRITE = 10.5.68.0/24, 10.19.0.0/16, 132.230.68.0/24, *.bi.uni-freiburg.de
     ALLOW_READ = $(ALLOW_WRITE)
     ALLOW_NEGOTIATOR = $(ALLOW_WRITE)
@@ -10,14 +10,6 @@ write_files:
     UID_DOMAIN = bi.uni-freiburg.de
     TRUST_UID_DOMAIN = True
     SOFT_UID_DOMAIN = True
-    # Flocking
-    FLOCK_FROM = flock.condor.usegalaxy.eu
-    HOSTALLOW_WRITE = $(ALLOW_WRITE)
-    HOSTALLOW_READ = $(ALLOW_READ)
-    HOSTALLOW_WRITE_COLLECTOR = $(HOSTALLOW_WRITE), $(FLOCK_FROM)
-    HOSTALLOW_WRITE_STARTD    = $(HOSTALLOW_WRITE), $(FLOCK_FROM)
-    HOSTALLOW_READ_COLLECTOR  = $(HOSTALLOW_READ), $(FLOCK_FROM)
-    HOSTALLOW_READ_STARTD     = $(HOSTALLOW_READ), $(FLOCK_FROM)
   owner: root:root
   path: /etc/condor/condor_config.local
   permissions: '0644'
