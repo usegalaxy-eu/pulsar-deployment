@@ -5,7 +5,7 @@ resource "openstack_networking_secgroup_v2" "secgroup_1" {
 
 resource "openstack_networking_secgroup_rule_v2" "c48fef49-3f64-44d6-86d1-7f0e09548569" {
   direction         = "egress"
-  ethertype         = "IPv4"
+  ethertype         = "IPv6"
   security_group_id = "${openstack_networking_secgroup_v2.secgroup_1.id}"
 }
 
@@ -20,7 +20,7 @@ resource "openstack_networking_secgroup_rule_v2" "d84efe41-ffc6-42b2-85f2-3068f4
 }
 
 resource "openstack_networking_secgroup_rule_v2" "e0616720-09c1-45cc-aa66-9850665432c5" {
-  direction         = "ingress"
+  direction         = "egress"
   ethertype         = "IPv4"
   security_group_id = "${openstack_networking_secgroup_v2.secgroup_1.id}"
 }

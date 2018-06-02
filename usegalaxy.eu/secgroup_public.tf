@@ -23,13 +23,13 @@ resource "openstack_networking_secgroup_rule_v2" "05135b3c-2cbf-4892-a5c6-f95bb5
 }
 
 resource "openstack_networking_secgroup_rule_v2" "81cece52-6293-47de-8bc2-502e16efa9dc" {
-  direction         = "ingress"
-  ethertype         = "IPv4"
+  direction         = "egress"
+  ethertype         = "IPv6"
   security_group_id = "${openstack_networking_secgroup_v2.Public.id}"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "c1b291ec-0147-4022-bcae-0af6cb390f78" {
-  direction         = "ingress"
+  direction         = "egress"
   ethertype         = "IPv4"
   security_group_id = "${openstack_networking_secgroup_v2.Public.id}"
 }

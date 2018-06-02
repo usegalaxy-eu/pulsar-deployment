@@ -3,6 +3,7 @@ resource "openstack_networking_secgroup_v2" "public-mosh" {
   description = "public-mosh"
 }
 
+
 resource "openstack_networking_secgroup_rule_v2" "41156470-b6fb-48d1-950b-bcf17bf64ba2" {
   direction         = "ingress"
   ethertype         = "IPv4"
@@ -10,5 +11,17 @@ resource "openstack_networking_secgroup_rule_v2" "41156470-b6fb-48d1-950b-bcf17b
   remote_ip_prefix  = "0.0.0.0/0"
   port_range_min    = "60000"
   port_range_max    = "61000"
+  security_group_id = "${openstack_networking_secgroup_v2.public-mosh.id}"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "bf477c50-aa83-448b-acfb-6d5e0a7c091c" {
+  direction         = "egress"
+  ethertype         = "IPv4"
+  security_group_id = "${openstack_networking_secgroup_v2.public-mosh.id}"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "560c0696-266b-479a-a519-ff13ec998b7b" {
+  direction         = "egress"
+  ethertype         = "IPv6"
   security_group_id = "${openstack_networking_secgroup_v2.public-mosh.id}"
 }
