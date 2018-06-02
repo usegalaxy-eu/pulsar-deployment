@@ -1,0 +1,24 @@
+resource "openstack_compute_keypair_v2" "cloud2" {
+  name       = "cloud2"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDV7gfNbNN5O8vH6/tM/iOFXKBP2YKRHXOmdfV8ogvu9BdVV0IPmDzk2EooVpThDE1VMv1hz3811tvBhHRJ6IgNhVIV/61w/+RazQD/AU27X8bX+Hb9EQ/bP4DW+6ySd/z5vdDLzpH5dbiMhzPEDkXVsylUT+hkQnas6cHspDhHmtKQ5MWOgDe3D/IEudTDJQe8hxxaU4TaZUmFzn7eYp9HvuK8qW0yCy4NWOxJJHA+G5wSCyLuKnaKo4AitUIzSKF1AB94oq7b96KONhPxgRptAk4OYIUTdNFbrI5HDaSNzHLnF5FbjQvG+Eu6m5nY5yvJMogE+jiuWeIXCZTCFljg287FUo0ohmbZpd802L6VXun14VumRC+rRgPrvBALo/CsyCsPIoBSTKhVElxKVOcRjmTLNfrUZM0GQxqJhIvah8BV+JTExkipPwkrKTdMAWIXvCoehxV+WMpBWqtEEzAzEoqJpaiec7HfriwsHTGESZWAPYEbFjzbHXQZtqBkbOvtokPMRmTWfWKxaplCMN6ddJeeY6faorD0w/e6lszWES1Q1ieajiPKDy37UvybKKvPTk4o3MzyzYOS4c8HQj+jnGeR5Q3ETuyz4psLyOfuBtIrfOeuxV42rFDmkYM3IrrRR+F9oklFG6Ig8DVfgQEzSG36NkgvpF4OdFvigYqXvw== cloud@vgcn"
+}
+
+resource "openstack_compute_keypair_v2" "fabio" {
+  name       = "fabio"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5E41At/B9sdaI5uZDnph2KIZcDvC7l45idBjPB3maq+mYH5RXGzpGzm9wp1p1NmcMjKbZ+ZsBR1hZt+htYVlW8PJs/xaV6/HWl/n6zmW1c6mCbnhEEb2uvJ+bpKKK4E9HJE8PwgbT5Gtm0JRNCLl8xuMLZE9rc1Fh4wqvP3G7oc1ij0auIduIWicPdsVqv3AX3ZlD73QeesOo41dgWumkKN4FSIiIjhwGrul17PV2YDOxJmV2PvIQAGG8le/qc/O+tnvha8xAQNaJSl0oUFeHmTkDKNLZRl6MDXUE7sHFaf0G1GQLPcnZQlb3iEZuaa7pOaexPhkUhlsmsWnkEH6P fabio@Fabios-MacBook.lan"
+}
+
+resource "openstack_compute_keypair_v2" "jenkins" {
+  name       = "jenkins"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCijQFI17q5aExREX95V3r66c2OAp3MdWrLplDVy6Pfvfy8gINHLobtpO/tBxEtxvm/L6cTtiBKCHpwWkVLp+1Z6gpJumtITJXRkFbPUsFiOVbdgprwCbxD9J40RUxrD1Zz+hqbBiDuSttfc82Zzzh2vvYazHpzLgPHEeh+9a6IdbFbRIvf1FgdUoR1hUMmcHdAdvwrsLXaN0ZYa/XlAp+JPFAqZjL8HCiko3kMOq329thZJBEPBUdYE6IVrIke4uff1ONObnmaJYtburd8Z0bwaYNYbIce5yYH/V/oNAFUgL+mp55U+IJD4ju0gRbzR/ibc/E2yrdLXHGIY2z7hDZv jenkins@jenkins.denbi.uni-freiburg.de"
+}
+
+resource "openstack_compute_keypair_v2" "leda" {
+  name       = "leda"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC3+qyO/LFIlfET+TMTvgRy8VjR+oIBUIi2Yh4ZiRgYDobfOPOxjC/aobcBra7r4Kar7BEkIncAUIbcyb5uoBVkYCNHCDsVXVh5EuqLPNIaCYRtoMdho16NKeeeI2o+F3V/PyuBOifk4XRde3nI2s5N3xAcqjAO0lKc77OfESredxH9cEwBINw2ioiC1kjMVl9C+hrObnSU3Jirt0jrsPYSCkuaRFcc3JPKZHBN+RnZxoqp+jrPUY/o0ekHwXXHjoHcMd8cuqGEgd4U346gYkIQa9sAl2v6n2bByCmNE2lKrtCCK+uad+u1LnrhwYmPmGPGzPL69QWXvuNCRfH8Xtt3PpCNdNwKOpVRm0DvgvJMgb6qsIAMUYVGwmZFj+CECrD3+eoR0L70VQ6UTTjiolrV5SQRf+iYzj1h9KEjbSqKr+Ya4IQUajz/SdmuIVfqVQJFwZup1JXIOxpy5e+1gOKWV2u61ScnrCzJXaETPdzysxdufvMXz4TsM/9ekI7yEbDSwPf8p5RiC1RbcMxbkca9x1jd+Z0P7891kSOYyQy2xnA41hkuBwOzB99wLhYNc8cvqCG8pTOkgi2QSQCyb/Q7YL3g0GrQ8EhYLY4J1/du38lE6t8OLbCeGRRVjzyb+aFsgBO35GJA6a5d/gtS/nQgjWbv/GV4jDVc6DwkCZrCwQ== hxr@leda"
+}
+
+resource "openstack_compute_keypair_v2" "tower" {
+  name       = "tower"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDHLnFKbvn/QYk8bwIOQBz063y0TpGqP88dLOd7SXSZ/OX2/JVesxnzgvWXaBNjMTEFpFunE+GrgJc8iriH/0EMx3p6LWwmT4siIJmEh5x0ouAMJ8j3FZWeo0s1YhCNaXIy6Ng8TNtOGXae+qUBbDKttG60I26vsPH1IOKzcV70SmNdT/6eMvE6EXvk1M2qgIaW45CQZxgyuGm9/Q11t+OVWbSjmv+AYLFqcDj82lz9jNuYJhOsxA1JpaRZAl42j60iocRHFadyCPyP+LkciEbIvjLmW6jCiCcr48cOu2DjSVeefAOwuup9xMGmVBhmdOmkGbM+fbq/fFtn6P7AN5hJ ubuntu@usegalaxy"
+}

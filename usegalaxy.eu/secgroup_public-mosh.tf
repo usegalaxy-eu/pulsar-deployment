@@ -3,7 +3,6 @@ resource "openstack_networking_secgroup_v2" "public-mosh" {
   description = "[tf] Rules for mosh servers"
 }
 
-
 resource "openstack_networking_secgroup_rule_v2" "41156470-b6fb-48d1-950b-bcf17bf64ba2" {
   direction         = "ingress"
   ethertype         = "IPv4"
