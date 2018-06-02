@@ -7,3 +7,8 @@ We've separated stuff into multiple folders for different sets of tests and expi
   of what is needed for VGCN and does not use DNS addresses.
 - examples includes a flocking example
 - vgcn is our current internal vgcn tests
+
+
+## LICENSE
+
+GPLv3
