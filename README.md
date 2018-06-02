@@ -5,8 +5,9 @@ We've separated stuff into multiple folders for different sets of tests and expi
 - public users probably want to consume [the public
   branch](https://github.com/usegalaxy-eu/terraform/tree/public) which is most
   of what is needed for VGCN and does not use DNS addresses.
-- examples includes a flocking example
-- vgcn is our current internal vgcn tests
+- [examples](./examples/) includes a flocking example
+- [vgcn](./vgcn/) is our current internal vgcn tests
+- [usegalaxy.eu](./usegalaxy.eu/) is our actual infrastructure
 
 
 ## LICENSE
