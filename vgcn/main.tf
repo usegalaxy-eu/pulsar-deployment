@@ -8,9 +8,9 @@ resource "openstack_compute_instance_v2" "central-manager" {
   user_data       = "${file("conf/cm.yml")}"
 }
 
-resource "openstack_compute_instance_v2" "m1.medium" {
+resource "openstack_compute_instance_v2" "m1-medium" {
   count           = 2
-  name            = "${var.prefix}m1.medium${var.suffix}"
+  name            = "${var.prefix}m1-medium${var.suffix}"
   flavor_name     = "m1.medium"
   image_name      = "${var.image}"
   key_pair        = "${var.key_pair}"
@@ -42,5 +42,5 @@ zone_id = "Z3BOXJYLR7ZV7D"
 name    = "manager.vgcn.usegalaxy.eu"
 type    = "A"
 ttl     = "300"
-records = ["${openstack_compute_instance_v2.test-cm.access_ip_v4}"]
+records = ["${openstack_compute_instance_v2.central-manager.access_ip_v4}"]
 }
