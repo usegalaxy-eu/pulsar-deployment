@@ -1,5 +1,12 @@
 # UseGalaxy.eu VGCN Terraform Plan
 
+**NOTE** This is slightly different and I copied the readme. This version
+relies on NFS. Please use [the public
+branch](https://github.com/usegalaxy-eu/terraform/tree/public) This branch+folder is **ONLY**
+for usegalaxy.eu testing and will not work without changing a number of DNS entries.
+
+-----
+
 We've built  "virtual galaxy compute nodes" (VGCN), a single very generic image
 which has all of the required components (docker, singularity, autofs, CVMFS)
 to act as a galaxy compute node as part of a condor cluster. The terraform
