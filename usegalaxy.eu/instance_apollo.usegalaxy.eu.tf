@@ -3,7 +3,7 @@ resource "openstack_compute_instance_v2" "apollo" {
   image_name      = "CentOS Server 7 RAW"
   flavor_name     = "m1.large"
   key_pair        = "cloud2"
-  security_groups = ["public-web", "public-ping", "egress", "Public", "public-ssh", "public-web", "public-ping", "egress", "Public", "public-ssh"]
+  security_groups = ["public-web", "public-ping", "egress", "ufr-ssh"]
 
   network {
     name = "public"
