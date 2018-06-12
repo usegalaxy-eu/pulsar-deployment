@@ -13,3 +13,13 @@ write_files:
   owner: root:root
   path: /etc/condor/condor_config.local
   permissions: '0644'
+- content: |
+    /data           /etc/auto.data          nfsvers=3
+  owner: root:root
+  path: /etc/auto.master.d/data.autofs
+  permissions: '0644'
+- content: |
+    share  -rw,hard,intr,nosuid,quota  nfs.vgcn.usegalaxy.eu:/export/share
+  owner: root:root
+  path: /etc/auto.data
+  permissions: '0644'
