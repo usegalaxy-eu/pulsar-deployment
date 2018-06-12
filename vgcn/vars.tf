@@ -6,7 +6,7 @@ variable "suffix" {
 	default = ".usegalaxy.eu"
 }
 variable "image" {
-  default = "vggp-v29-j42-5cb4857b0824-master"
+  default = "vggp-v29-j44-aec7827deba9-pulsar"
 }
 
 variable "key_pair" {
