@@ -38,9 +38,9 @@ resource "aws_route53_record" "nfs-server" {
 }
 
 resource "aws_route53_record" "cm" {
-zone_id = "Z3BOXJYLR7ZV7D"
-name    = "manager.vgcn.usegalaxy.eu"
-type    = "A"
-ttl     = "300"
-records = ["${openstack_compute_instance_v2.central-manager.access_ip_v4}"]
+  zone_id = "Z3BOXJYLR7ZV7D"
+  name    = "manager.vgcn.usegalaxy.eu"
+  type    = "A"
+  ttl     = "300"
+  records = ["${openstack_compute_instance_v2.central-manager.access_ip_v4}"]
 }
