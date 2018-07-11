@@ -1,6 +1,7 @@
 resource "openstack_networking_secgroup_v2" "ufr-ssh" {
   name        = "ufr-ssh"
-  description = "Ingress SSH connections for UFR networks (e.g. combine with public-web/public-ping)"
+  description = "[tf] Ingress SSH connections for UFR networks (e.g. combine with public-web/public-ping)"
+delete_default_rules = "true"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "83c664a8-ea59-4751-9002-2b41e9b16562" {

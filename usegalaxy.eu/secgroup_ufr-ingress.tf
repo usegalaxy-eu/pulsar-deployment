@@ -1,6 +1,7 @@
 resource "openstack_networking_secgroup_v2" "ufr-ingress" {
   name        = "ufr-ingress"
-  description = "Ingress connections from any UFR networks"
+  description = "[tf] Ingress connections from any UFR networks"
+  delete_default_rules = "true"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "40047dc3-cf90-4d66-ade4-5c281ea03a9c" {

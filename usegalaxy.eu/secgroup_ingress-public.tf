@@ -1,6 +1,7 @@
 resource "openstack_networking_secgroup_v2" "ingress-public" {
   name        = "ingress-public"
-  description = "Allow any incoming connection"
+  description = "[tf] Allow any incoming connection"
+delete_default_rules = "true"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "a7cbadeb-926b-46cf-9cb5-83203f1765aa" {

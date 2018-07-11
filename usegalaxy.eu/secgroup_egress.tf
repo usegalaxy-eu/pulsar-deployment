@@ -1,6 +1,7 @@
 resource "openstack_networking_secgroup_v2" "egress" {
   name        = "egress"
-  description = "Default egress profile"
+  description = "[tf] Default egress profile"
+delete_default_rules = "true"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "00914113-bb06-4862-84f4-fec30b168565" {
