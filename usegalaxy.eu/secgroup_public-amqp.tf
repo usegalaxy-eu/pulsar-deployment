@@ -1,7 +1,7 @@
 resource "openstack_networking_secgroup_v2" "public-amqp" {
-  name        = "public-amqp"
-  description = "[tf] Allow incoming AMQP connections"
-delete_default_rules = "true"
+  name                 = "public-amqp"
+  description          = "[tf] Allow incoming AMQP connections"
+  delete_default_rules = "true"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "public-amqp-5671" {

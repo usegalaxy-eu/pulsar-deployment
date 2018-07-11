@@ -1,7 +1,7 @@
 resource "openstack_networking_secgroup_v2" "Public" {
-  name = "public"
-  description = "[tf] Completely public machine (ingress + egress)"
-delete_default_rules = "true"
+  name                 = "public"
+  description          = "[tf] Completely public machine (ingress + egress)"
+  delete_default_rules = "true"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "e79fa4e2-bca0-42b4-b864-67e6a750dbe8" {

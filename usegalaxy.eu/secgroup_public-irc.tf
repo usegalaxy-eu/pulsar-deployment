@@ -1,7 +1,7 @@
 resource "openstack_networking_secgroup_v2" "public-irc" {
-  name        = "public-irc"
-  description = "[tf] Allow incoming IRC connections"
-delete_default_rules = "true"
+  name                 = "public-irc"
+  description          = "[tf] Allow incoming IRC connections"
+  delete_default_rules = "true"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "6179ae32-e3c4-4a8c-a05a-a45bdd7872f3" {

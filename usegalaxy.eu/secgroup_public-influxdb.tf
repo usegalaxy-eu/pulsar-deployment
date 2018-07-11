@@ -1,7 +1,7 @@
 resource "openstack_networking_secgroup_v2" "public-influxdb" {
-  name        = "public-influxdb"
-  description = "[tf] Allow public HTTP(s) connections to port 8086"
-delete_default_rules = "true"
+  name                 = "public-influxdb"
+  description          = "[tf] Allow public HTTP(s) connections to port 8086"
+  delete_default_rules = "true"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "7321459b-815a-4f0c-a5fd-5740f0c4da1c" {

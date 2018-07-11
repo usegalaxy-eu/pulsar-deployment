@@ -8,5 +8,4 @@ resource "openstack_compute_instance_v2" "apollo" {
   network {
     name = "public"
   }
-
 }

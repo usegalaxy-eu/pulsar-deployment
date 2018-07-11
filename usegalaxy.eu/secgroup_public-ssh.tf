@@ -1,7 +1,7 @@
 resource "openstack_networking_secgroup_v2" "public-ssh" {
-  name        = "public-ssh"
-  description = "[tf] Allow SSH connections from anywhere"
-delete_default_rules = "true"
+  name                 = "public-ssh"
+  description          = "[tf] Allow SSH connections from anywhere"
+  delete_default_rules = "true"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "aa57e62d-6644-40fb-ad6f-05b50e14bb54" {
