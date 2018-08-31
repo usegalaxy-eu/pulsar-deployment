@@ -23,3 +23,20 @@ write_files:
   owner: root:root
   path: /etc/auto.data
   permissions: '0644'
+#- content: |
+    #conda_auto_init: true
+    #conda_auto_install: true
+    #managers:
+        #_default_:
+            #num_concurrent_jobs: 1
+            #type: queued_python
+    #message_queue_url: pyamqp://galaxy_test:7e8hWABdDNAGOiiyTa0lxEFft@proxy.usegalaxy.eu:5671//pulsar/galaxy_test?ssl=1
+    #staging_directory: /scratch/
+    #tool_dependency_dir: /usr/local/tools/
+  #owner: pulsar:pulsar
+  #path: /opt/pulsar/config/app.yml
+  #permissions: '0640'
+
+#runcmd:
+ #- [ systemctl, enable, pulsar ]
+ #- [ systemctl, start, pulsar ]

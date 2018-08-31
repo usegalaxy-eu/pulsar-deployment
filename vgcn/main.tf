@@ -9,8 +9,8 @@ resource "openstack_compute_instance_v2" "central-manager" {
 }
 
 resource "openstack_compute_instance_v2" "m1-medium" {
-  count           = 2
-  name            = "${var.prefix}m1-medium${var.suffix}"
+  count           = 1
+  name            = "${var.prefix}exec${count.index}-m1-${var.suffix}"
   flavor_name     = "m1.medium"
   image_name      = "${var.image}"
   key_pair        = "${var.key_pair}"
@@ -43,4 +43,8 @@ resource "aws_route53_record" "cm" {
   type    = "A"
   ttl     = "300"
   records = ["${openstack_compute_instance_v2.central-manager.access_ip_v4}"]
+}
+
+output "central-manager" {
+  value = "${formatlist("%v", openstack_compute_instance_v2.central-manager.*.access_ip_v4)}"
 }

@@ -7,7 +7,7 @@ variable "suffix" {
 }
 
 variable "image" {
-  default = "vggp-v29-j44-aec7827deba9-pulsar"
+  default = "vggp-v30-j55-74550e4a2789-asdf3"
 }
 
 variable "key_pair" {
@@ -16,14 +16,14 @@ variable "key_pair" {
 
 variable "secgroups" {
   default = [
-    "Public",
+    "ufr-ssh", "public-ping"
   ]
 }
 
 variable "network" {
   default = [
     {
-      name = "galaxy-net"
+      name = "public"
     },
   ]
 }
