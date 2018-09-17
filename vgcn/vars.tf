@@ -7,7 +7,7 @@ variable "suffix" {
 }
 
 variable "image" {
-  default = "vggp-v30-j55-74550e4a2789-asdf3"
+  default = "vggp-v30-j70-bb213b59aad0-pulsar"
 }
 
 variable "key_pair" {
@@ -16,14 +16,14 @@ variable "key_pair" {
 
 variable "secgroups" {
   default = [
-    "ufr-ssh", "public-ping"
+    "default"
   ]
 }
 
 variable "network" {
   default = [
     {
-      name = "public"
+      name = "bioinf"
     },
   ]
 }

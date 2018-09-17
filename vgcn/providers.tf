@@ -1,1 +1,4 @@
 provider "aws" {}
+
+provider "openstack" {
+}
