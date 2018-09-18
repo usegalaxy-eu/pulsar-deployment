@@ -17,7 +17,7 @@ variable "netz" {
 }
 
 variable "centos_image" {
-  default = "generic-centos7-v31-j3-e7ff51e48970-master"
+  default = "generic-centos7-v31-j4-edc5aa3dc22c-master"
 }
 
 variable "vgcn_image" {
@@ -25,5 +25,5 @@ variable "vgcn_image" {
 }
 
 variable "jenkins_image" {
-  default = "jenkins-worker-j18-b3e81a5bbb75-master"
+  default = "jenkins-worker-j26-edc5aa3dc22c-master"
 }
