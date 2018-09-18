@@ -8,7 +8,6 @@ resource "openstack_compute_instance_v2" "proxy" {
   network {
     name = "public"
   }
-
 }
 
 resource "aws_route53_record" "proxy" {
