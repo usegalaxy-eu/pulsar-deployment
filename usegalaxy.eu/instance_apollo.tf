@@ -6,10 +6,6 @@ resource "openstack_compute_instance_v2" "apollo-usegalaxy" {
   security_groups = ["egress", "ufr-ssh", "public-web"]
 
   network {
-    name = "public"
-  }
-
-  network {
     name = "bioinf"
   }
 }

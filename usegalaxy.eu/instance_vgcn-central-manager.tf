@@ -1,6 +1,6 @@
 resource "openstack_compute_instance_v2" "vgcn-cm" {
   name            = "manager.vgcn.usegalaxy.eu"
-  image_name      = "vggp-v31-j72-29c3034084a5-master"
+  image_name      = "${var.vgcn_image}"
   flavor_name     = "m1.small"
   key_pair        = "cloud2"
   security_groups = ["egress", "ufr-ssh", "public-web"]
