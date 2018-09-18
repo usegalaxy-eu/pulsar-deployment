@@ -1,6 +1,6 @@
 resource "openstack_compute_instance_v2" "cvmfs1-ufr0-usegalaxy" {
   name            = "cvmfs1-ufr0.usegalaxy.eu"
-  image_name      = "CentOS 7"
+  image_name      = "${var.centos_image}"
   flavor_name     = "m1.small"
   key_pair        = "cloud2"
   security_groups = ["egress", "ufr-ssh", "public-web"]

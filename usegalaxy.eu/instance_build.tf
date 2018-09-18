@@ -1,6 +1,6 @@
 resource "openstack_compute_instance_v2" "build-usegalaxy" {
   name            = "build.usegalaxy.eu"
-  image_name      = "CentOS 7"
+  image_name      = "${var.centos_image}"
   flavor_name     = "m1.large"
   key_pair        = "cloud2"
   security_groups = ["egress", "ufr-ssh", "public-web"]

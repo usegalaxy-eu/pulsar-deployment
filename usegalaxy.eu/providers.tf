@@ -18,3 +18,7 @@ variable "netz" {
   type        = "list"
   default     = ["192.52.32.0/20", "10.0.0.0/8"]
 }
+
+variable "centos_image" {
+  default = "generic-centos7-v31-j3-e7ff51e48970-master"
+}
