@@ -4,12 +4,6 @@ resource "openstack_networking_secgroup_v2" "ufr-web" {
   delete_default_rules = "true"
 }
 
-variable "netz" {
-  description = "Internal networks"
-  type        = "list"
-  default     = ["192.52.32.0/20", "10.0.0.0/8"]
-}
-
 resource "openstack_networking_secgroup_rule_v2" "in-80" {
   direction         = "ingress"
   ethertype         = "IPv4"
