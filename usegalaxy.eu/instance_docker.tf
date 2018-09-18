@@ -9,7 +9,3 @@ resource "openstack_compute_instance_v2" "docker-host" {
     name = "public"
   }
 }
-
-output "docker-host" {
-  value = "${formatlist("%v", openstack_compute_instance_v2.docker-host.*.access_ip_v4)}"
-}
