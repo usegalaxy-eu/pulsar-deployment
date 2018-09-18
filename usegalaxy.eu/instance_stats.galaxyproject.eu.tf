@@ -10,6 +10,19 @@ resource "openstack_compute_instance_v2" "stats-usegalaxy" {
   }
 }
 
+resource "openstack_blockstorage_volume_v3" "stats-data" {
+  name        = "stats_data"
+  description = "Data volume for Grafana"
+  size        = 2
+}
+
+resource "openstack_blockstorage_volume_attach_v3" "stats_va" {
+  volume_id  = "${openstack_blockstorage_volume_v3.stats-data.id}"
+  device     = "/dev/vdx"
+  host_name  = "stats.usegalaxy.eu"
+  ip_address = "${openstack_compute_instance_v2.stats-usegalaxy.access_ip_v4}"
+}
+
 # CNAME since everything should go through proxy
 resource "aws_route53_record" "stats-usegalaxy" {
   zone_id = "${var.zone_galaxyproject_eu}"
