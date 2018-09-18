@@ -10,17 +10,15 @@ resource "openstack_compute_instance_v2" "influxdb-usegalaxy" {
   }
 }
 
-resource "openstack_blockstorage_volume_v3" "influxdb-data" {
-  name        = "influxdb_data"
+resource "openstack_blockstorage_volume_v2" "influxdb-data" {
+  name        = "influxdb"
   description = "Data volume for InfluxDB"
   size        = 100
 }
 
-resource "openstack_blockstorage_volume_attach_v3" "influx_va" {
-  volume_id  = "${openstack_blockstorage_volume_v3.influxdb-data.id}"
-  device     = "/dev/vdx"
-  host_name  = "influxdb.usegalaxy.eu"
-  ip_address = "${openstack_compute_instance_v2.influxdb-usegalaxy.access_ip_v4}"
+resource "openstack_compute_volume_attach_v2" "influxdb-va" {
+  instance_id = "${openstack_compute_instance_v2.influxdb-usegalaxy.id}"
+  volume_id   = "${openstack_blockstorage_volume_v2.influxdb-data.id}"
 }
 
 # CNAME since everything should go through proxy

@@ -10,17 +10,15 @@ resource "openstack_compute_instance_v2" "sentry-usegalaxy" {
   }
 }
 
-resource "openstack_blockstorage_volume_v3" "sentry-data" {
-  name        = "sentry_data"
+resource "openstack_blockstorage_volume_v2" "sentry-data" {
+  name        = "sentry"
   description = "Data volume for Sentry"
   size        = 10
 }
 
-resource "openstack_blockstorage_volume_attach_v3" "sentry_va" {
-  volume_id  = "${openstack_blockstorage_volume_v3.sentry-data.id}"
-  device     = "/dev/vdx"
-  host_name  = "sentry.usegalaxy.eu"
-  ip_address = "${openstack_compute_instance_v2.sentry-usegalaxy.access_ip_v4}"
+resource "openstack_compute_volume_attach_v2" "sentry-va" {
+  instance_id = "${openstack_compute_instance_v2.sentry-usegalaxy.id}"
+  volume_id   = "${openstack_blockstorage_volume_v2.sentry-data.id}"
 }
 
 # CNAME since everything should go through proxy
