@@ -21,19 +21,10 @@ resource "openstack_compute_volume_attach_v2" "influxdb-va" {
   volume_id   = "${openstack_blockstorage_volume_v2.influxdb-data.id}"
 }
 
-# CNAME since everything should go through proxy
-resource "aws_route53_record" "influxdb-usegalaxy" {
-  zone_id = "${var.zone_galaxyproject_eu}"
-  name    = "influxdb.galaxyproject.eu"
-  type    = "CNAME"
-  ttl     = "7200"
-  records = ["proxy.galaxyproject.eu"]
-}
-
 # But an internal record to permit SSHing until we find a nice solution for that.
 resource "aws_route53_record" "influxdb-usegalaxy-internal" {
   zone_id = "${var.zone_galaxyproject_eu}"
-  name    = "influxdb.internal.galaxyproject.eu"
+  name    = "influxdb.galaxyproject.eu"
   type    = "A"
   ttl     = "7200"
   records = ["${openstack_compute_instance_v2.influxdb-usegalaxy.access_ip_v4}"]
