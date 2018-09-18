@@ -29,7 +29,7 @@ resource "aws_route53_record" "influxdb-usegalaxy" {
   name    = "influxdb.galaxyproject.eu"
   type    = "CNAME"
   ttl     = "7200"
-  records = ["proxy.usegalaxy.eu"]
+  records = ["proxy.galaxyproject.eu"]
 }
 
 # But an internal record to permit SSHing until we find a nice solution for that.
