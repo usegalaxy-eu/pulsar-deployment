@@ -3,7 +3,7 @@ resource "openstack_compute_instance_v2" "vgcn-cm" {
   image_name      = "${var.vgcn_image}"
   flavor_name     = "m1.small"
   key_pair        = "cloud2"
-  security_groups = ["egress", "ufr-ssh", "public-web"]
+  security_groups = "${var.sg_webservice}"
 
   network {
     name = "bioinf"

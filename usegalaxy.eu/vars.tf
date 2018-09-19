@@ -27,3 +27,8 @@ variable "vgcn_image" {
 variable "jenkins_image" {
   default = "jenkins-worker-j26-edc5aa3dc22c-master"
 }
+
+variable "sg_webservice" {
+  type    = "list"
+  default = ["egress", "ufr-ssh", "public-ping", "public-web2"]
+}

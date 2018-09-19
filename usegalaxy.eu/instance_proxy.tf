@@ -3,7 +3,7 @@ resource "openstack_compute_instance_v2" "proxy" {
   image_name      = "${var.centos_image}"
   flavor_name     = "m1.small"
   key_pair        = "cloud2"
-  security_groups = ["egress", "ufr-ssh", "public-web"]
+  security_groups = "${var.sg_webservice}"
 
   network {
     name = "public"
