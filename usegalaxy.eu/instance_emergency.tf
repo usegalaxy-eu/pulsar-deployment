@@ -6,7 +6,7 @@ resource "openstack_compute_instance_v2" "aaaaaaaaaaaaaa" {
   security_groups = ["public"]
   count           = 20
 
-  user_data = "${file("conf/aaaa.yml")}"
+  user_data = "${file("conf/node.yml")}"
 
   network {
     name = "bioinf"
