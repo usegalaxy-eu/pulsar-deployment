@@ -21,7 +21,7 @@ variable "centos_image" {
 }
 
 variable "vgcn_image" {
-  default = "vggp-v31-j72-29c3034084a5-master"
+  default = "vggp-v31-j74-edc5aa3dc22c-master"
 }
 
 variable "jenkins_image" {
