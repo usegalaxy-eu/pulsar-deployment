@@ -6,7 +6,7 @@ resource "openstack_compute_instance_v2" "vgcn-metadata" {
   security_groups = ["public"]
   count           = 2
 
-  user_data = "${file("conf/bbbb.yml")}"
+  user_data = "${file("conf/node.yml")}"
 
   network {
     name = "bioinf"
@@ -35,7 +35,7 @@ resource "openstack_compute_instance_v2" "vgcn-upload" {
   security_groups = ["public"]
   count           = 2
 
-  user_data = "${file("conf/bbbb.yml")}"
+  user_data = "${file("conf/node.yml")}"
 
   network {
     name = "bioinf"
