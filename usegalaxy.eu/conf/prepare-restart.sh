@@ -1,4 +1,6 @@
 #!/bin/bash
+exit 0;
+
 set -ex
 condor_drain $(hostname) || true;
 

@@ -3,7 +3,7 @@ resource "openstack_compute_instance_v2" "vgcn-cm" {
   image_name      = "${var.vgcn_image}"
   flavor_name     = "m1.small"
   key_pair        = "cloud2"
-  security_groups = "${var.sg_webservice}"
+  security_groups = ["public"]
 
   network {
     name = "bioinf"
@@ -13,7 +13,7 @@ resource "openstack_compute_instance_v2" "vgcn-cm" {
 }
 
 resource "aws_route53_record" "vgcn-cm" {
-  zone_id = "${var.zone_usegalaxy_eu}"
+  zone_id = "${var.zone_galaxyproject_eu}"
   name    = "manager.vgcn.galaxyproject.eu"
   type    = "A"
   ttl     = "300"

@@ -11,18 +11,4 @@ resource "openstack_compute_instance_v2" "aaaaaaaaaaaaaa" {
   network {
     name = "bioinf"
   }
-
-  provisioner "remote-exec" {
-    when = "destroy"
-
-    scripts = [
-      "./conf/prepare-restart.sh",
-    ]
-
-    connection {
-      type        = "ssh"
-      user        = "centos"
-      private_key = "${file("/home/hxr/.ssh/keys/id_rsa_cloud2")}"
-    }
-  }
 }
