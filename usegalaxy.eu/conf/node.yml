@@ -75,7 +75,3 @@ write_files:
   owner: root:root
   path: /etc/auto.usrlocal
   permissions: '0644'
-
-runcmd:
- - [ systemctl, stop, telegraf ]
- - [ systemctl, disable, telegraf ]
