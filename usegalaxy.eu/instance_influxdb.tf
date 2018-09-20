@@ -1,5 +1,5 @@
 resource "openstack_compute_instance_v2" "influxdb-usegalaxy" {
-  name            = "influxdb.internal.galaxyproject.eu"
+  name            = "influxdb.galaxyproject.eu"
   image_name      = "${var.centos_image}"
   flavor_name     = "m1.large"
   key_pair        = "cloud2"

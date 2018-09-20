@@ -1,5 +1,5 @@
 resource "openstack_compute_instance_v2" "sentry-usegalaxy" {
-  name            = "sentry.internal.galaxyproject.eu"
+  name            = "sentry.galaxyproject.eu"
   image_name      = "${var.centos_image}"
   flavor_name     = "m1.small"
   key_pair        = "cloud2"
