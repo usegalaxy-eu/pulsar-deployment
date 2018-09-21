@@ -7,7 +7,6 @@ We've separated stuff into multiple folders for different sets of tests and expi
   of what is needed for VGCN and does not use DNS addresses.
 - [examples](./examples/) includes a flocking example
 - [vgcn](./vgcn/) is our current internal vgcn tests
-- [usegalaxy.eu](./usegalaxy.eu/) is our actual infrastructure
 
 
 ## LICENSE
