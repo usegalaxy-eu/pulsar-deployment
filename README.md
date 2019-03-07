@@ -48,14 +48,15 @@ supplied [by UseGalaxy.eu](https://usegalaxy.eu/static/vgcn/).
 
 Next you'll want to customize some of the variables in [`vars.tf`](./vars.tf).
 
-Variable      | Default Value   | Purpose
---------      | -------------   | -------
-image         | vggp....        | The name of the image in your openstack image list
-`name_prefix` | `vgcn-`         | Prefixed to the name of the VMs that are launched
-`name_suffix` | `.usegalaxy.eu` | This defaults to our domain, images do not need to be named as FQDNs but if you're using any sort of automated OpenStack DNS solution this can make things easier.
-`key_pair`    | `cloud2`        | OpenStack keypair name that you will use to access VMs
-`secgroups`   | ...             | We have built some default rules for network access. Currently these are extremely broad, we may change that in the future. Alternatively you can supply your own preferred security groups here.
-`network`     | `galaxy-net`    | The network to launch images in.
+Variable          | Default Value          | Purpose
+--------          | -------------          | -------
+image             | vggp....               | The name of the image in your openstack image list
+`name_prefix`     | `vgcn-`                | Prefixed to the name of the VMs that are launched
+`name_suffix`     | `.usegalaxy.eu`        | This defaults to our domain, images do not need to be named as FQDNs but if you're using any sort of automated OpenStack DNS solution this can make things easier.
+`flavors`         | `[m1.tiny, m1.medium]` | OpenStack flavors list that you will use to define resources of nova computing instances.
+`exec_node_count` | `2`                    | Number of exec nodes.
+`secgroups`       | ...                    | We have built some default rules for network access. Currently these are extremely broad, we may change that in the future. Alternatively you can supply your own preferred security groups here.
+`network`         | `galaxy-net`           | The network to launch images in.
 
 If you want to disable the built-in NFS server and supply your own, simply:
 

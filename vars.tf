@@ -1,5 +1,16 @@
+variable "flavors" {
+  default = [
+    "m1.tiny",
+    "m1.medium"
+    ]
+}
+
+variable "exec_node_count" {
+  default = 2
+}
+
 variable "image" {
-  default = "vggp-v29-j34-11c38f1ccfca-passordless"
+  default = "vggp-v31-j101-2deef7cb2572-master"
 }
 
 variable "name_prefix" {
@@ -8,10 +19,6 @@ variable "name_prefix" {
 
 variable "name_suffix" {
   default = ".usegalaxy.eu"
-}
-
-variable "key_pair" {
-  default = "cloud2"
 }
 
 variable "secgroups" {
