@@ -13,6 +13,10 @@ variable "image" {
   default = "vggp-v31-j101-2deef7cb2572-master"
 }
 
+variable "public_key" {
+  default = "ssh-rsa blablablabla..."
+}
+
 variable "name_prefix" {
   default = "vgcn-"
 }
