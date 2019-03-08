@@ -1,8 +1,8 @@
 resource "openstack_compute_instance_v2" "central-manager" {
   name            = "${var.name_prefix}central-manager${var.name_suffix}"
-  flavor_name     = "m1.tiny"
+  flavor_name     = "${var.flavors[0]}"
   image_name      = "${var.image}"
-  key_pair        = "${var.key_pair}"
+  key_pair        = "${openstack_compute_keypair_v2.my-cloud-key.name}"
   security_groups = "${var.secgroups}"
   network         = "${var.network}"
 
@@ -36,11 +36,11 @@ resource "openstack_compute_instance_v2" "central-manager" {
 }
 
 resource "openstack_compute_instance_v2" "exec-node" {
-  count           = 2
+  count           = "${var.exec_node_count}"
   name            = "${var.name_prefix}exec-node-${count.index}${var.name_suffix}"
-  flavor_name     = "m1.medium"
+  flavor_name     = "${var.flavors[1]}"
   image_name      = "${var.image}"
-  key_pair        = "${var.key_pair}"
+  key_pair        = "${openstack_compute_keypair_v2.my-cloud-key.name}"
   security_groups = "${var.secgroups}"
   network         = "${var.network}"
 
