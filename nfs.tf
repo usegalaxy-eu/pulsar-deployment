@@ -17,7 +17,7 @@ resource "openstack_compute_instance_v2" "nfs-server" {
 
     runcmd:
      - [ mkdir, -p, /data/share ]
-     - [ chown, galaxy:galaxy, -R, /data/share ]
+     - [ chown, "centos:centos", -R, /data/share ]
      - [ systemctl, enable, nfs-server ]
      - [ systemctl, start, nfs-server ]
      - [ exportfs, -avr ]
