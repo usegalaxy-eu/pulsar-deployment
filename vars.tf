@@ -1,3 +1,7 @@
+variable "nfs_disk_size" {
+  default = 3
+}
+
 variable "flavors" {
   default = [
     "m1.tiny",
