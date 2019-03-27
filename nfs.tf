@@ -7,7 +7,7 @@ resource "openstack_compute_instance_v2" "nfs-server" {
   network         = "${var.network}"
 
   block_device {
-    uuid                  = "${openstack_blockstorage_volume_v2.volume_nfs_data.id}"
+    uuid                  = "${data.openstack_images_image_v2.vgcn-image.id}"
     source_type           = "image"
     destination_type      = "local"
     boot_index            = 0
