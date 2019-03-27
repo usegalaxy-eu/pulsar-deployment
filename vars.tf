@@ -16,7 +16,13 @@ variable "exec_node_count" {
 }
 
 variable "image" {
-  default = "vggp-v31-j101-2deef7cb2572-master"
+  type = "map"
+  default = {
+    "name" = "vggp-v31-j117"
+    "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-v31-j117-124d6d4a9be5-master.raw"
+    "container_format" = "bare"
+    "disk_format" = "raw"
+   }
 }
 
 variable "public_key" {
