@@ -1,7 +1,7 @@
 resource "openstack_compute_instance_v2" "nfs-server" {
   name            = "${var.name_prefix}nfs${var.name_suffix}"
   image_id        = "${data.openstack_images_image_v2.vgcn-image.id}"
-  flavor_name     = "${var.flavors[1]}"
+  flavor_name     = "${var.flavors["nfs-server"]}"
   key_pair        = "${openstack_compute_keypair_v2.my-cloud-key.name}"
   security_groups = "${var.secgroups}"
   network         = "${var.network}"

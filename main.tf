@@ -4,7 +4,7 @@ data "openstack_images_image_v2" "vgcn-image" {
 
 resource "openstack_compute_instance_v2" "central-manager" {
   name            = "${var.name_prefix}central-manager${var.name_suffix}"
-  flavor_name     = "${var.flavors[1]}"
+  flavor_name     = "${var.flavors["central-manager"]}"
   image_id        = "${data.openstack_images_image_v2.vgcn-image.id}"
   image_name      = "${var.image}"
   key_pair        = "${openstack_compute_keypair_v2.my-cloud-key.name}"
@@ -43,7 +43,7 @@ resource "openstack_compute_instance_v2" "central-manager" {
 resource "openstack_compute_instance_v2" "exec-node" {
   count           = "${var.exec_node_count}"
   name            = "${var.name_prefix}exec-node-${count.index}${var.name_suffix}"
-  flavor_name     = "${var.flavors[1]}"
+  flavor_name     = "${var.flavors["exec-node"]}"
   image_id        = "${data.openstack_images_image_v2.vgcn-image.id}"
   key_pair        = "${openstack_compute_keypair_v2.my-cloud-key.name}"
   security_groups = "${var.secgroups}"

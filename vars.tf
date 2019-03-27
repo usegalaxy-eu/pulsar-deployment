@@ -3,10 +3,12 @@ variable "nfs_disk_size" {
 }
 
 variable "flavors" {
-  default = [
-    "m1.tiny",
-    "m1.medium"
-    ]
+  type = "map"
+  default = {
+    "central-manager" = "m1.medium"
+    "exec-node" = "m1.large"
+    "nfs-server" = "m1.medium"
+  }
 }
 
 variable "exec_node_count" {
