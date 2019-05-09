@@ -50,14 +50,15 @@ Next you'll want to customize some of the variables in [`vars.tf`](./vars.tf).
 
 Variable          | Default Value          | Purpose
 --------          | -------------          | -------
-image             | vggp....               | The name of the image in your openstack image list
+image             | ...                    | The name and the source url of the image to upload in your openstack environment
 `name_prefix`     | `vgcn-`                | Prefixed to the name of the VMs that are launched
 `name_suffix`     | `.usegalaxy.eu`        | This defaults to our domain, images do not need to be named as FQDNs but if you're using any sort of automated OpenStack DNS solution this can make things easier.
-`flavors`         | `[m1.tiny, m1.medium]` | OpenStack flavors list that you will use to define resources of nova computing instances.
+`flavors`         | ...                    | OpenStack flavors map that you will use to define resources of nova computing instances.
 `exec_node_count` | `2`                    | Number of exec nodes.
 `public_key`      | ...                    | SSH public key to use to access computing instances.
 `secgroups`       | ...                    | We have built some default rules for network access. Currently these are extremely broad, we may change that in the future. Alternatively you can supply your own preferred security groups here.
 `network`         | `galaxy-net`           | The network to launch images in.
+`nfs_disk_size`   | `3`                    | NFS server disk size in GB.
 
 If you want to disable the built-in NFS server and supply your own, simply:
 
