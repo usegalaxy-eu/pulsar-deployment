@@ -6,7 +6,7 @@ variable "flavors" {
   type = "map"
   default = {
     "central-manager" = "m1.medium"
-    "exec-node" = "m1.large"
+    "exec-node" = "m1.medium"
     "nfs-server" = "m1.medium"
   }
 }
@@ -44,10 +44,6 @@ variable "secgroups" {
   ]
 }
 
-variable "network" {
-  default = [
-    {
-      name = "galaxy-net"
-    },
-  ]
+variable "public_network" {
+  default  = "public"
 }

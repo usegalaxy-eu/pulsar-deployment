@@ -1,10 +1,15 @@
 resource "openstack_compute_instance_v2" "nfs-server" {
+  depends_on = ["openstack_networking_subnet_v2.internal"]
+
   name            = "${var.name_prefix}nfs${var.name_suffix}"
   image_id        = "${openstack_images_image_v2.vgcn-image.id}"
   flavor_name     = "${var.flavors["nfs-server"]}"
   key_pair        = "${openstack_compute_keypair_v2.my-cloud-key.name}"
   security_groups = "${var.secgroups}"
-  network         = "${var.network}"
+
+  network {
+    name = "${openstack_networking_network_v2.internal.name}"
+  }
 
   block_device {
     uuid                  = "${openstack_images_image_v2.vgcn-image.id}"
