@@ -47,3 +47,7 @@ variable "secgroups" {
 variable "public_network" {
   default  = "public"
 }
+
+variable "private_network" {
+  default  = "vgcn-private"
+}
