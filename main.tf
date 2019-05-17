@@ -1,5 +1,4 @@
 resource "openstack_compute_instance_v2" "central-manager" {
-  depends_on = ["openstack_networking_subnet_v2.internal"]
 
   name            = "${var.name_prefix}central-manager${var.name_suffix}"
   flavor_name     = "${var.flavors["central-manager"]}"
@@ -44,7 +43,6 @@ resource "openstack_compute_instance_v2" "central-manager" {
 }
 
 resource "openstack_compute_instance_v2" "exec-node" {
-  depends_on = ["openstack_networking_subnet_v2.internal"]
 
   count           = "${var.exec_node_count}"
   name            = "${var.name_prefix}exec-node-${count.index}${var.name_suffix}"

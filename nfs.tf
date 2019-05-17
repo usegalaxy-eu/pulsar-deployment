@@ -1,5 +1,4 @@
 resource "openstack_compute_instance_v2" "nfs-server" {
-  depends_on = ["openstack_networking_subnet_v2.internal"]
 
   name            = "${var.name_prefix}nfs${var.name_suffix}"
   image_id        = "${openstack_images_image_v2.vgcn-image.id}"
