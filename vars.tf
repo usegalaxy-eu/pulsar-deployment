@@ -37,9 +37,19 @@ variable "name_suffix" {
   default = ".usegalaxy.eu"
 }
 
-variable "secgroups" {
+variable "secgroups_cm" {
+  type = "list"
   default = [
-    "vgcn-ingress-public",
+    "vgcn-public-ssh",
+    "vgcn-ingress-from-private",
+    "vgcn-egress-public",
+  ]
+}
+
+variable "secgroups" {
+  type = "list"
+  default = [
+    "vgcn-ingress-from-private",
     "vgcn-egress-public",
   ]
 }
@@ -49,5 +59,13 @@ variable "public_network" {
 }
 
 variable "private_network" {
-  default  = "vgcn-private"
+  type = "map"
+  default  = {
+    name = "vgcn-private"
+    cidr4 = "192.168.199.0/24"
+  }
+}
+
+variable "ssh-port" {
+  default = "22"
 }
