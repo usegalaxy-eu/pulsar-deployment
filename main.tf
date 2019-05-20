@@ -4,7 +4,7 @@ resource "openstack_compute_instance_v2" "central-manager" {
   flavor_name     = "${var.flavors["central-manager"]}"
   image_id        = "${openstack_images_image_v2.vgcn-image.id}"
   key_pair        = "${openstack_compute_keypair_v2.my-cloud-key.name}"
-  security_groups = "${var.secgroups}"
+  security_groups = "${var.secgroups_cm}"
 
   network {
     name = "${var.public_network}"
