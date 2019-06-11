@@ -62,6 +62,7 @@ variable "private_network" {
   type = "map"
   default  = {
     name = "vgcn-private"
+    subnet_name = "vgcn-private-subnet"
     cidr4 = "192.168.199.0/24"
   }
 }
