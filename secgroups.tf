@@ -1,20 +1,20 @@
-resource "openstack_networking_secgroup_v2" "ingress-from-private" {
-  name                 = "${var.name_prefix}ingress-from-private"
+resource "openstack_networking_secgroup_v2" "ingress-private" {
+  name                 = "${var.name_prefix}ingress-private"
   description          = "[tf] Allow any incoming connection from private network"
   delete_default_rules = true
 }
 
-resource "openstack_networking_secgroup_rule_v2" "ingress-public-4" {
+resource "openstack_networking_secgroup_rule_v2" "ingress-private-4" {
   direction         = "ingress"
   ethertype         = "IPv4"
   remote_ip_prefix  = "${var.private_network["cidr4"]}"
-  security_group_id = "${openstack_networking_secgroup_v2.ingress-from-private.id}"
+  security_group_id = "${openstack_networking_secgroup_v2.ingress-private.id}"
 }
 
-//resource "openstack_networking_secgroup_rule_v2" "ingress-public-6" {
+//resource "openstack_networking_secgroup_rule_v2" "ingress-private-6" {
 //  direction         = "ingress"
 //  ethertype         = "IPv6"
-//  security_group_id = "${openstack_networking_secgroup_v2.ingress-public.id}"
+//  security_group_id = "${openstack_networking_secgroup_v2.ingress-private.id}"
 //}
 
 resource "openstack_networking_secgroup_v2" "egress-public" {
