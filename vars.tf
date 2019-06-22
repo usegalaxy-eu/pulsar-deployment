@@ -18,8 +18,8 @@ variable "exec_node_count" {
 variable "image" {
   type = "map"
   default = {
-    "name" = "vggp-v31-j117"
-    "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-v31-j117-124d6d4a9be5-master.raw"
+    "name" = "vggp-v31-j124"
+    "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-v31-j124-5f1806ab2120-master.raw"
     "container_format" = "bare"
     "disk_format" = "raw"
    }
