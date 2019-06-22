@@ -7,10 +7,10 @@ resource "openstack_compute_instance_v2" "central-manager" {
   security_groups = "${var.secgroups_cm}"
 
   network {
-    name = "${var.public_network}"
+    uuid = "${data.openstack_networking_network_v2.external.id}"
   }
   network {
-    name = "${openstack_networking_network_v2.internal.name}"
+    uuid = "${openstack_networking_network_v2.internal.id}"
   }
 
   user_data = <<-EOF
@@ -52,7 +52,7 @@ resource "openstack_compute_instance_v2" "exec-node" {
   security_groups = "${var.secgroups}"
 
   network {
-    name = "${openstack_networking_network_v2.internal.name}"
+    uuid = "${openstack_networking_network_v2.internal.id}"
   }
 
   user_data = <<-EOF

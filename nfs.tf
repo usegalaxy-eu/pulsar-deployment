@@ -7,7 +7,7 @@ resource "openstack_compute_instance_v2" "nfs-server" {
   security_groups = "${var.secgroups}"
 
   network {
-    name = "${openstack_networking_network_v2.internal.name}"
+    uuid = "${openstack_networking_network_v2.internal.id}"
   }
 
   block_device {
