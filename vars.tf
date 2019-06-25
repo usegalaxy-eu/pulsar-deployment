@@ -41,7 +41,7 @@ variable "secgroups_cm" {
   type = "list"
   default = [
     "vgcn-public-ssh",
-    "vgcn-ingress-from-private",
+    "vgcn-ingress-private",
     "vgcn-egress-public",
   ]
 }
@@ -49,7 +49,7 @@ variable "secgroups_cm" {
 variable "secgroups" {
   type = "list"
   default = [
-    "vgcn-ingress-from-private",
+    "vgcn-ingress-private",
     "vgcn-egress-public",
   ]
 }
