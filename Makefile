@@ -3,8 +3,10 @@ TF_DIR=tf
 
 help:
 	@echo "Please use \`make <target>\` where <target> is one of"
-	@echo "  pre_tasks                Create several resources before the main task [optional]"
+	@echo "  pre_tasks                Create several resources before the main tasks [optional]"
 	@echo "  init                     Initialize the Terraform working directory"
+	@echo "  add_exec_nodes            Add cpu based workers"
+	@echo "  add_gpu_nodes            Add gpu based workers"
 	@echo "  plan                     Generate and show the execution plan"
 	@echo "  apply                    Builds or changes infrastructure"
 	@echo "  destroy                  Prepare to destroy Terraform-managed infrastructure. After that you have to call apply target"
@@ -37,6 +39,12 @@ link:
 	ln -srf secgroups.tf "${TF_DIR}/_secgroups.tf"
 	ln -srf vars.tf "${TF_DIR}"
 	ln -srf Makefile "${TF_DIR}"
+
+add_exec_nodes:
+	ln -srf exec_nodes.tf "${TF_DIR}/_exec_nodes.tf"
+
+add_gpu_nodes:
+	ln -srf gpu_nodes.tf "${TF_DIR}/_gpu_nodes.tf"
 
 plan:
 	cd ${TF_DIR}; terraform plan

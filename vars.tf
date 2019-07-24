@@ -6,8 +6,9 @@ variable "flavors" {
   type = "map"
   default = {
     "central-manager" = "m1.medium"
-    "exec-node" = "m1.medium"
     "nfs-server" = "m1.medium"
+    "exec-node" = "m1.medium"
+    "gpu-node" = "m1.medium"
   }
 }
 
@@ -15,11 +16,15 @@ variable "exec_node_count" {
   default = 2
 }
 
+variable "gpu_node_count" {
+  default = 2
+}
+
 variable "image" {
   type = "map"
   default = {
-    "name" = "vggp-v31-j124"
-    "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-v31-j124-5f1806ab2120-master.raw"
+    "name" = "vggp-v31-j128-0c5f1226c21c-master"
+    "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-v31-j128-0c5f1226c21c-master.raw"
     "container_format" = "bare"
     "disk_format" = "raw"
    }

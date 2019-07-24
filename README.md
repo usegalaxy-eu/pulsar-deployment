@@ -14,7 +14,7 @@ it and point the compute nodes at your own NFS server.
 
 The terraform file defines three "resources":
 
-- an NFS server (does not use volumes currently, as this is a demo and not for production without changes. You can replace this with your own NFS server)
+- an NFS server
 - a central manager
 - an exec node
 

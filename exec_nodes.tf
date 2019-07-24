@@ -1,14 +1,12 @@
-resource "openstack_compute_instance_v2" "central-manager" {
+resource "openstack_compute_instance_v2" "exec-node" {
 
-  name            = "${var.name_prefix}central-manager${var.name_suffix}"
-  flavor_name     = "${var.flavors["central-manager"]}"
+  count           = "${var.exec_node_count}"
+  name            = "${var.name_prefix}exec-node-${count.index}${var.name_suffix}"
+  flavor_name     = "${var.flavors["exec-node"]}"
   image_id        = "${data.openstack_images_image_v2.vgcn-image.id}"
   key_pair        = "${openstack_compute_keypair_v2.my-cloud-key.name}"
-  security_groups = "${var.secgroups_cm}"
+  security_groups = "${var.secgroups}"
 
-  network {
-    uuid = "${data.openstack_networking_network_v2.external.id}"
-  }
   network {
     uuid = "${data.openstack_networking_network_v2.internal.id}"
   }
@@ -17,15 +15,28 @@ resource "openstack_compute_instance_v2" "central-manager" {
     #cloud-config
     write_files:
     - content: |
-        CONDOR_HOST = localhost
+        CONDOR_HOST = ${openstack_compute_instance_v2.central-manager.network.1.fixed_ip_v4}
         ALLOW_WRITE = *
         ALLOW_READ = $(ALLOW_WRITE)
-        ALLOW_NEGOTIATOR = $(ALLOW_WRITE)
-        DAEMON_LIST = COLLECTOR, MASTER, NEGOTIATOR, SCHEDD
+        ALLOW_ADMINISTRATOR = *
+        ALLOW_NEGOTIATOR = $(ALLOW_ADMINISTRATOR)
+        ALLOW_CONFIG = $(ALLOW_ADMINISTRATOR)
+        ALLOW_DAEMON = $(ALLOW_ADMINISTRATOR)
+        ALLOW_OWNER = $(ALLOW_ADMINISTRATOR)
+        ALLOW_CLIENT = *
+        DAEMON_LIST = MASTER, SCHEDD, STARTD
         FILESYSTEM_DOMAIN = vgcn
         UID_DOMAIN = vgcn
         TRUST_UID_DOMAIN = True
         SOFT_UID_DOMAIN = True
+        # run with partitionable slots
+        CLAIM_PARTITIONABLE_LEFTOVERS = True
+        NUM_SLOTS = 1
+        NUM_SLOTS_TYPE_1 = 1
+        SLOT_TYPE_1 = 100%
+        SLOT_TYPE_1_PARTITIONABLE = True
+        ALLOW_PSLOT_PREEMPTION = False
+        STARTD.PROPORTIONAL_SWAP_ASSIGNMENT = True
       owner: root:root
       path: /etc/condor/condor_config.local
       permissions: '0644'
