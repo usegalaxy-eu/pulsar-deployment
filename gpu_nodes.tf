@@ -31,6 +31,9 @@ resource "openstack_compute_instance_v2" "gpu-node" {
         UID_DOMAIN = vgcn
         TRUST_UID_DOMAIN = True
         SOFT_UID_DOMAIN = True
+        # Advertise the GPUs
+        use feature : GPUs
+        GPU_DISCOVERY_EXTRA = -extra
         # run with partitionable slots
         CLAIM_PARTITIONABLE_LEFTOVERS = True
         NUM_SLOTS = 1
