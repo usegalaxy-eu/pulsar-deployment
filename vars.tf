@@ -31,7 +31,11 @@ variable "image" {
 }
 
 variable "public_key" {
-  default = "ssh-rsa blablablabla..."
+  type = "map"
+  default = {
+    name = "key_label"
+    pubkey = "ssh-rsa blablablabla..."
+  }
 }
 
 variable "name_prefix" {
