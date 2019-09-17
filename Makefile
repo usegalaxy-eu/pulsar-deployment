@@ -1,5 +1,6 @@
 EXE=./bin/
 TERRAFORM=$(EXE)terraform
+TF_VERSION=0.11.14
 TF_DIR=tf
 
 check_defined = \
@@ -25,9 +26,9 @@ help: bin/terraform
 bin/terraform:
 	@echo "*** Starting Terraform download ***"
 	mkdir -p bin
-	wget https://releases.hashicorp.com/terraform/0.11.14/terraform_0.11.14_linux_amd64.zip
-	unzip -u -d bin terraform_0.11.14_linux_amd64.zip
-	rm terraform_0.11.14_linux_amd64.zip
+	wget https://releases.hashicorp.com/terraform/$(TF_VERSION)/terraform_$(TF_VERSION)_linux_amd64.zip
+	unzip -u -d bin terraform_$(TF_VERSION)_linux_amd64.zip
+	rm terraform_$(TF_VERSION)_linux_amd64.zip
 	@echo "*** Terraform download terminated ***"
 	@echo " "
 
