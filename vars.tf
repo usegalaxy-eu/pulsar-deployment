@@ -17,7 +17,7 @@ variable "exec_node_count" {
 }
 
 variable "gpu_node_count" {
-  default = 2
+  default = 0
 }
 
 variable "image" {
