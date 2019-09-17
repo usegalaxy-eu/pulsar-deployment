@@ -1,71 +1,64 @@
-TF_FILES:=$(wildcard *.tf)
+EXE=./bin/
+TERRAFORM=$(EXE)terraform
 TF_DIR=tf
 
+check_defined = \
+    $(strip $(foreach 1,$1, \
+        $(call __check_defined,$1,$(strip $(value 2)))))
+__check_defined = \
+    $(if $(value $1),, \
+      $(error Undefined $1$(if $2, ($2))))
+
+
 help:
-	@echo "Please use \`make <target>\` where <target> is one of"
-	@echo "  pre_tasks                Create several resources before the main tasks [optional]"
-	@echo "  init                     Initialize the Terraform working directory"
-	@echo "  add_exec_nodes            Add cpu based workers"
-	@echo "  add_gpu_nodes            Add gpu based workers"
-	@echo "  plan                     Generate and show the execution plan"
-	@echo "  apply                    Builds or changes infrastructure"
-	@echo "  destroy                  Prepare to destroy Terraform-managed infrastructure. After that you have to call apply target"
-	@echo "  fmt                      Rewrites config files to canonical format"
-	@echo "  graph                    Create a visual graph of Terraform resources"
+	@echo "Please digit \`WS=_label_ make _target_\` "
+	@echo " "
+	@echo "  _label_               is the name of your workspace"
+	@echo "  _target_              is one of the following:"
+	@echo " "
+	@echo "  pre_tasks             Create several resources before the main tasks [optional]"
+	@echo "  init                  Initialize the Terraform workspace"
+	@echo "  plan                  Generate and show the execution plan"
+	@echo "  switch                Switch workspace"
+	@echo "  apply                 Builds or changes infrastructure"
+	@echo "  graph                 Create a visual graph of Terraform resources"
 
 
-apply:
-	cd ${TF_DIR}; \
-	terraform validate; \
-	yes yes | terraform apply
+check_ws:
+	$(call check_defined, WS, prefix WS=value)
 
-destroy: clean_common plan
+select_ws: check_ws
+	$(TERRAFORM) workspace select $(WS)
 
-init: link
-	cd ${TF_DIR}; terraform init
 
-link:
-	mkdir -p ${TF_DIR}
-	mkdir -p ${TF_DIR}/files
-	ln -srf files/create_share.sh "${TF_DIR}/files"
-	ln -srf image.tf "${TF_DIR}"
-	ln -srf key_pair.tf "${TF_DIR}/_key_pair.tf"
-	ln -srf main.tf "${TF_DIR}/_main.tf"
-	ln -srf ext_network.tf "${TF_DIR}/_ext_network.tf"
-	ln -srf int_network.tf "${TF_DIR}/_int_network.tf"
-	ln -srf nfs.tf "${TF_DIR}/_nfs.tf"
-	ln -srf output.tf "${TF_DIR}/_output.tf"
-	ln -srf providers.tf "${TF_DIR}"
-	ln -srf secgroups.tf "${TF_DIR}/_secgroups.tf"
-	ln -srf vars.tf "${TF_DIR}"
-	ln -srf Makefile "${TF_DIR}"
+apply: validate
+	yes yes | $(TERRAFORM) apply $(WS)
 
-add_exec_nodes:
-	ln -srf exec_nodes.tf "${TF_DIR}/_exec_nodes.tf"
+init: check_ws
+	if [ ! -d $(WS) ];then			\
+		cp -r $(TF_DIR) $(WS);			\
+		$(TERRAFORM) workspace new $(WS);	\
+	fi
+	$(TERRAFORM) workspace select $(WS)
+	$(TERRAFORM) init $(WS)
 
-add_gpu_nodes:
-	ln -srf gpu_nodes.tf "${TF_DIR}/_gpu_nodes.tf"
+plan: validate
+	$(TERRAFORM) plan $(WS)
 
-plan:
-	cd ${TF_DIR}; terraform plan
+switch: check_ws select_ws
+	$(TERRAFORM) workspace list
 
-clean_common:
-	cd ${TF_DIR}; rm -rf _*.tf
+validate: select_ws
+	$(TERRAFORM) validate $(WS)
 
-graph.png: ${TF_DIR}/$(TF_FILES) ${TF_DIR}/terraform.tfstate
-	cd ${TF_DIR}; terraform graph | dot -Tpng > graph.png
+version:
+	$(TERRAFORM) -v
 
-fmt:
-	cd ${TF_DIR}; terraform fmt
 
-_pre_tasks-init: _pre_tasks-link
-	cd ${TF_DIR}; terraform init
 
-_pre_tasks-link:
-	mkdir -p ${TF_DIR}
-	ln -srf pre_tasks.tf "${TF_DIR}/_pre_tasks.tf"
-	ln -srf ext_network.tf "${TF_DIR}/_ext_network.tf"
-	ln -srf vars.tf "${TF_DIR}"
-	ln -srf Makefile "${TF_DIR}"
+graph: check_ws select_ws
+	$(TERRAFORM) graph $(WS)| dot -Tpng > $(WS)_graph.png
 
-pre_tasks: _pre_tasks-init apply
+pre_tasks: check_ws select_ws
+	mv $(WS)/pre_tasks._tf $(WS)/pre_tasks.tf
+
