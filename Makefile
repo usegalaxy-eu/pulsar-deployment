@@ -9,8 +9,7 @@ __check_defined = \
     $(if $(value $1),, \
       $(error Undefined $1$(if $2, ($2))))
 
-
-help:
+help: bin/terraform
 	@echo "Please digit \`WS=_label_ make _target_\` "
 	@echo " "
 	@echo "  _label_               is the name of your workspace"
@@ -23,6 +22,14 @@ help:
 	@echo "  apply                 Builds or changes infrastructure"
 	@echo "  graph                 Create a visual graph of Terraform resources"
 
+bin/terraform:
+	@echo "*** Starting Terraform download ***"
+	mkdir -p bin
+	wget https://releases.hashicorp.com/terraform/0.11.14/terraform_0.11.14_linux_amd64.zip
+	unzip -u -d bin terraform_0.11.14_linux_amd64.zip
+	rm terraform_0.11.14_linux_amd64.zip
+	@echo "*** Terraform download terminated ***"
+	@echo " "
 
 check_ws:
 	$(call check_defined, WS, prefix WS=value)
