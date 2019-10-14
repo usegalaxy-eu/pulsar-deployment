@@ -16,7 +16,6 @@ help: bin/terraform
 	@echo "  _label_               is the name of your workspace"
 	@echo "  _target_              is one of the following:"
 	@echo " "
-	@echo "  pre_tasks             Create several resources before the main tasks [optional]"
 	@echo "  init                  Initialize the Terraform workspace"
 	@echo "  plan                  Generate and show the execution plan"
 	@echo "  switch                Switch workspace"
@@ -67,6 +66,6 @@ version:
 graph: check_ws select_ws
 	$(TERRAFORM) graph $(WS)| dot -Tpng > $(WS)_graph.png
 
-pre_tasks: check_ws select_ws
+pre_tasks: init
 	mv $(WS)/pre_tasks._tf $(WS)/pre_tasks.tf
 
