@@ -21,6 +21,10 @@ help: bin/terraform
 	@echo "  switch                Switch workspace"
 	@echo "  apply                 Builds or changes infrastructure"
 	@echo "  graph                 Create a visual graph of Terraform resources"
+	@echo " "
+	@echo "  version               Show Terraform version"
+	@echo "  ws_list               Show all Terraform workspaces"
+	
 
 bin/terraform:
 	@echo "*** Starting Terraform download ***"
@@ -60,7 +64,9 @@ validate: select_ws
 
 version:
 	$(TERRAFORM) -v
-
+	
+ws_list:
+	$(TERRAFORM) workspace list
 
 
 graph: check_ws select_ws
