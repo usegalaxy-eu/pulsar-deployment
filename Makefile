@@ -38,6 +38,11 @@ bin/terraform:
 check_ws:
 	$(call check_defined, WS, prefix WS=value)
 
+check_ws_dir: check_ws
+	if [ ! -d $(WS) ];then			\
+		$(TERRAFORM) workspace new $(WS);	\
+	fi
+
 select_ws: check_ws
 	$(TERRAFORM) workspace select $(WS)
 
@@ -45,11 +50,8 @@ select_ws: check_ws
 apply: validate
 	yes yes | $(TERRAFORM) apply $(WS)
 
-init: check_ws
-	if [ ! -d $(WS) ];then			\
-		cp -r $(TF_DIR) $(WS);			\
-		$(TERRAFORM) workspace new $(WS);	\
-	fi
+init: check_ws_dir update
+	cp -r $(TF_DIR) $(WS);
 	$(TERRAFORM) workspace select $(WS)
 	$(TERRAFORM) init $(WS)
 
@@ -58,6 +60,9 @@ plan: validate
 
 switch: check_ws select_ws
 	$(TERRAFORM) workspace list
+
+update: check_ws
+	cp -u $(TF_DIR)/*.tf $(WS)/;
 
 validate: select_ws
 	$(TERRAFORM) validate $(WS)
@@ -72,6 +77,9 @@ ws_list:
 graph: check_ws select_ws
 	$(TERRAFORM) graph $(WS)| dot -Tpng > $(WS)_graph.png
 
-pre_tasks: init
-	mv $(WS)/pre_tasks._tf $(WS)/pre_tasks.tf
-
+pre_tasks: bin/terraform check_ws_dir
+	$(TERRAFORM) workspace select $(WS)
+	$(TERRAFORM) init $(WS)
+	cp $(TF_DIR)/vars.tf $(WS)
+	cp $(TF_DIR)/ext_network.tf $(WS)
+	cp $(TF_DIR)/pre_tasks._tf $(WS)/pre_tasks.tf
