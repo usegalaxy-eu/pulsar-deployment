@@ -81,5 +81,6 @@ pre_tasks: bin/terraform check_ws_dir
 	$(TERRAFORM) workspace select $(WS)
 	$(TERRAFORM) init $(WS)
 	cp $(TF_DIR)/vars.tf $(WS)
+	cp $(TF_DIR)/providers.tf $(WS)
 	cp $(TF_DIR)/ext_network.tf $(WS)
 	cp $(TF_DIR)/pre_tasks._tf $(WS)/pre_tasks.tf
