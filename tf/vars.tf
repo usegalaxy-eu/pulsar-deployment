@@ -3,7 +3,7 @@ variable "nfs_disk_size" {
 }
 
 variable "flavors" {
-  type = "map"
+  type = map(string)
   default = {
     "central-manager" = "m1.medium"
     "nfs-server" = "m1.medium"
@@ -21,17 +21,17 @@ variable "gpu_node_count" {
 }
 
 variable "image" {
-  type = "map"
+  type = map(string)
   default = {
-    "name" = "vggp-v31-j132-4ab83d5ffde9-master"
-    "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-v31-j132-4ab83d5ffde9-master.raw"
+    "name" = "vggp-v60-j326-d1dfcf46c4cd-main"
+    "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-v60-j326-d1dfcf46c4cd-main.raw"
     "container_format" = "bare"
     "disk_format" = "raw"
    }
 }
 
 variable "public_key" {
-  type = "map"
+  type = map(string)
   default = {
     name = "key_label"
     pubkey = "ssh-rsa blablablabla..."
@@ -47,7 +47,7 @@ variable "name_suffix" {
 }
 
 variable "secgroups_cm" {
-  type = "list"
+  type = list(string)
   default = [
     "vgcn-public-ssh",
     "vgcn-ingress-private",
@@ -56,7 +56,7 @@ variable "secgroups_cm" {
 }
 
 variable "secgroups" {
-  type = "list"
+  type = list(string)
   default = [
     "vgcn-ingress-private",
     "vgcn-egress-public",
@@ -68,7 +68,7 @@ variable "public_network" {
 }
 
 variable "private_network" {
-  type = "map"
+  type = map(string)
   default  = {
     name = "vgcn-private"
     subnet_name = "vgcn-private-subnet"
