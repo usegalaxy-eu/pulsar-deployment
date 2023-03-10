@@ -12,20 +12,17 @@ resource "openstack_compute_instance_v2" "central-manager" {
   network {
     uuid = "${data.openstack_networking_network_v2.internal.id}"
   }
-
- // provisioner "remote-exec" {
- //   inline = ["sudo dnf update -y", "echo Done!"]
-
- //   connection {
- //     host        = self.access_ip_v4
- //     type        = "ssh"
- //     user        = "centos"
- //     private_key = file(var.pvt_key)
- //   }
- // }
   
   provisioner "local-exec" {
-    command = "sleep 60; ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -b -i '${self.access_ip_v4},' --private-key ${var.pvt_key} --extra-vars='condor_ip_range=${var.private_network.cidr4} condor_host=${self.network.1.fixed_ip_v4} condor_ip_range=${var.private_network.cidr4} condor_password=${var.condor_pass}' condor-install-cm.yml"
+    command = <<-EOF
+      ansible-galaxy install -p ansible/roles usegalaxy_eu.htcondor
+      sleep 60
+        ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -b -i '${self.access_ip_v4},' \
+        --private-key ${var.pvt_key} --extra-vars='condor_ip_range=${var.private_network.cidr4}
+        condor_host=${self.network.1.fixed_ip_v4} condor_password=${var.condor_pass}
+        message_queue_url="${var.mq_string}"' \
+        ansible/main.yml
+    EOF
   }
 
   user_data = <<-EOF
@@ -80,11 +77,11 @@ resource "openstack_compute_instance_v2" "central-manager" {
       permissions: '0644'
 
     runcmd:
+      - [ firewall-cmd, --permanent, --add-port=2049/tcp ]
+      - [ firewall-cmd, --reload ]
+      - [ automount ]
       - [ sh, -xc, "sed -i 's|nameserver 10.0.2.3||g' /etc/resolv.conf" ]
       - [ sh, -xc, "sed -i 's|localhost.localdomain|$(hostname -f)|g' /etc/telegraf/telegraf.conf" ]
       - systemctl restart telegraf
-      - [mv, /etc.intra-vgcn-key.vgcn.key, /home/centos/.ssh/id_rsa]
-      - chmod 0600 /home/centos/.intra-vgcn-key.id_rsa
-      - [chown, centos.centos, /home/centos/.intra-vgcn-key.id_rsa]
   EOF
 }

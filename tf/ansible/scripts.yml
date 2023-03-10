@@ -1,0 +1,31 @@
+---
+- name: Create scripts path
+  file:
+    path: "{{ pulsar_data_path }}/scripts"
+    state: directory
+    mode: '0755'
+    owner: pulsar
+    group: pulsar
+  become: yes
+
+- name: Copy HTCondor script files
+  synchronize:
+    src: "scripts/"
+    dest: "{{ pulsar_data_path }}/scripts"
+
+- name: Change permissions of HTCondor script files
+  file:
+    path: "{{ pulsar_data_path }}/{{ item.name }}"
+    mode: "{{ item.mode }}"
+    owner: pulsar
+    group: pulsar
+  with_items:
+    - {'name': scripts/test.job, 'mode': '0600'}
+    - {'name': scripts/test.sh, 'mode': '0700'}
+    - {'name': scripts/fio.job, 'mode': '0600'}
+    - {'name': scripts/fio.sh, 'mode': '0700'}
+    - {'name': scripts/iperf.job, 'mode': '0600'}
+    - {'name': scripts/iperf.sh, 'mode': '0700'}
+    - {'name': scripts/tar_x_conda_envs.job, 'mode': '0600'}
+    - {'name': scripts/tar_x_conda_envs.sh, 'mode': '0700'}
+

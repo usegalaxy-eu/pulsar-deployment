@@ -1,0 +1,7 @@
+Universe = vanilla
+Executable = tar_x_conda_envs.sh
+Log = tar_x_conda_envs.$(process).log
+Output = tar_x_conda_envs.$(process).out
+Error = tar_x_conda_envs.$(process).err
+request_cpus = 1
+Queue 1

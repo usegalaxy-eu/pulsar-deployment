@@ -1,0 +1,7 @@
+Universe = vanilla
+Executable = fio.sh
+Log = fio.$(process).log
+Output = fio.$(process).out
+Error = fio.$(process).err
+request_cpus = 2
+Queue 1

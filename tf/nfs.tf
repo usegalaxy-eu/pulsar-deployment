@@ -56,6 +56,7 @@ data "template_cloudinit_config" "nfs-share" {
       permissions: '0644'
 
     runcmd:
+     - [ sh, -xc, "sed -i 's|nameserver 10.0.2.3||g' /etc/resolv.conf" ]
      - [ firewall-cmd, --permanent, --add-port=2049/tcp ]
      - [ firewall-cmd, --reload ]
      - [ systemctl, enable, nfs-server ]

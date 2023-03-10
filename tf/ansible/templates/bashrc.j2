@@ -1,0 +1,20 @@
+function change_to_wd (){
+USAGE="Please provide a Galaxy job ID or a Condor job ID"
+if (( $# == 0 )); then
+    echo $USAGE
+    return 0;
+fi
+
+JID=$1
+JWD={{ pulsar_data_path }}/staging/$JID
+if [[ $? -ne 0 || ! -d $JWD ]]; then
+    echo "INFO: Could not find the job working directory for job $JID"
+    return 1
+fi
+cd $JWD
+}
+
+alias lp='sudo journalctl -f -u pulsar.service'
+alias rp='sudo systemctl restart pulsar.service'
+alias chg2wd='change_to_wd'
+alias chg2jwd='change_to_jwd'

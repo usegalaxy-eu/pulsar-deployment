@@ -1,0 +1,11 @@
+---
+bashrc_users:
+  - uname: centos
+    uhome: /home/centos
+    gname: centos
+  - uname: pulsar
+    uhome: /opt/pulsar
+    gname: pulsar
+  - uname: root
+    uhome: /root
+    gname: root

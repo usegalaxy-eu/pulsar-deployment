@@ -1,0 +1,23 @@
+pulsar_server_dir: /opt/pulsar
+pulsar_data_path: /data/share
+
+pulsar_container_image_cache_path: "{{ pulsar_data_path }}/var/database/container_cache"
+
+pulsar_virtualenv_command: "python -m venv"
+pulsar_root: /opt/pulsar
+
+message_queue_url:
+
+copy_metrics_plugins: false
+metrics_plugins_to_copy:
+  - {'src': 'staging_time.py', 'dest': '/opt/pulsar/venv/lib/python2.7/site-packages/galaxy/jobs/metrics/instrumenters/staging_time.py'}
+
+#
+# Update hosts script parameters
+# the values here depend on what you have set up in your terraform configuration
+# see: https://github.com/usegalaxy-eu/pulsar-infrastructure/blob/master/tf/vars.tf
+#
+name_prefix: "vgcn-mira-"
+name_suffix: ".pulsar"
+private_network_prefix: "{{ condor_ip_range }}"
+workers_group_name: "workers"

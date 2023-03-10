@@ -88,6 +88,8 @@ resource "openstack_compute_instance_v2" "exec-node" {
       - [ python3, -m, pip, install, ansible ]
       - [ ansible-galaxy, install, -p, /home/centos/roles, usegalaxy_eu.htcondor ]
       - [ ansible-playbook, -i, 'localhost,', /home/centos/condor.yml]
+      - [ git, clone, <some magic repo URL> ]
+      - [ ansible-playbook, -i, 'localhost,', /home/centos/ ]
       - systemctl start condor
       EOF
 }

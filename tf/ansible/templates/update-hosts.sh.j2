@@ -1,0 +1,23 @@
+#!/bin/bash
+tmp=`mktemp`
+private_network_prefix=$(echo {{ private_network_prefix }} | awk -F. '{ print $1"."$2"."$3 }')
+cat /etc/hosts | grep $private_network_prefix > $tmp
+
+condor_status -autoformat Machine MyAddress | \
+    cut -f1 -d: | \
+    sed 's/<//g;s/{{ name_suffix }}//g'| \
+    awk '{print $2" "$1}'| \
+    sort -uk2 >> $tmp
+
+# Fix permissions
+chmod 644 $tmp
+# Replace our hosts
+mv $tmp /etc/hosts
+
+mkdir -p /etc/pssh
+
+echo "$(cat /etc/hosts | grep $private_network_prefix | awk '{print $2}')" > /etc/pssh/cloud
+
+for group in $(cat /etc/hosts | grep $private_network_prefix | awk '{print $2}' | awk -F- '{print $3}' | sort -u); do
+	echo "$(cat /etc/hosts | grep $private_network_prefix | awk '{print $2}' | grep $group)" >> "/etc/pssh/$group"
+done

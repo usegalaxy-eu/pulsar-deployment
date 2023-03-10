@@ -1,0 +1,43 @@
+---
+- name: Add cron to delete directories of successful jobs older than 60 minutes
+  cron:
+    name: "delete successful directories"
+    minute: "21"
+    hour: "*/2"
+    job: "find {{ pulsar_data_path }}/staging/*/postprocessed -type f -amin +60 -exec dirname {} \\; | xargs rm -rf "
+
+- name: Add cron to delete directories of unsuccessful jobs older than 10 days
+  cron:
+    name: "delete unsuccessful directories"
+    minute: "21"
+    hour: "3"
+    job: "find {{ pulsar_data_path }}/staging/ -maxdepth 1 -mindepth 1 -type d -ctime +10 -exec rm -rf {} +"
+
+- name: Add cron to restart pulsar
+  cron:
+    name: "restart Pulsar to take care of RabbitMQ shutdown issue"
+    minute: "11"
+    hour: "6"
+    job: "sudo systemctl restart pulsar"
+
+- name: Copy update-host script
+  become: yes
+  template:
+    src: update-hosts.sh.j2
+    dest: /usr/bin/update-hosts
+    mode: 0744
+
+- name: Creates a cron file under /etc/cron.d
+  become: yes
+  cron:
+    name: update hosts
+    special_time: hourly
+    user: root
+    job: "/usr/bin/update-hosts"
+    cron_file: ansible_update_hosts
+
+- name: Condor auto approve
+  ansible.builtin.cron:
+    name: condor_auto_approve
+    minute: 0
+    job: "/usr/bin/condor_token_request_auto_approve -netblock {{ condor_ip_range }} -lifetime 3660"
