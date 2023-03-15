@@ -30,6 +30,7 @@
     - name: import scripts tasks
       import_tasks: scripts.yml
       become_user: pulsar
+      become: yes
 
     - name: import metrics tasks
       import_tasks: metrics.yml

@@ -6,12 +6,16 @@
     mode: '0755'
     owner: pulsar
     group: pulsar
-  become: yes
 
 - name: Copy HTCondor script files
-  synchronize:
-    src: "scripts/"
+  ansible.builtin.copy:
+    src: "{{ item }}"
     dest: "{{ pulsar_data_path }}/scripts"
+    mode: '0755'
+    owner: pulsar
+    group: pulsar
+  with_fileglob:
+    - "scripts/*"
 
 - name: Change permissions of HTCondor script files
   file:
