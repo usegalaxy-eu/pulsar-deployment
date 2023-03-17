@@ -27,7 +27,7 @@ into the `vars.tf` file where you can change them as you need.
 - An OpenStack Deployment where you want to launch VGCN
 - API access to this OpenStack
 - [Terraform](https://www.terraform.io/intro/getting-started/install.html)
-- The latest VGGP image ([here](https://usegalaxy.eu/static/vgcn/)
+- The latest VGGP image ([here](https://usegalaxy.eu/static/vgcn/))
 
 ## Setup
 
@@ -46,7 +46,7 @@ export OS_USERNAME=...
 You'll need to upload a VGCN image to your openstack, prebuilt versions are
 supplied [by UseGalaxy.eu](https://usegalaxy.eu/static/vgcn/).
 
-Next you'll want to customize some of the variables in [`vars.tf`](./vars.tf).
+Next you'll want to customize some of the variables in [`vars.tf`](./tf/vars.tf).
 
 Variable          | Default Value          | Purpose
 --------          | -------------          | -------
@@ -71,7 +71,7 @@ If you want to disable the built-in NFS server and supply your own, simply:
 The workflow for deploying new pulsar endpoints would be now as follows:
 
 1. Fork this repository
-2. Change the vars in terraform vars.tf
+2. Change the `vars.tf`](./tf/vars.tf) file in terraform.
 3. Provide a SSH Key pair. THe public key has to be configured in the vars.tf as `publik_key` entry. The private key is needed in the terraform apply step.
 4. Request RabbitMQ user/vhost with password from usegalaxy.eu
 5. Launch the instance by applying terraform with the secrets: condor password, amqp string and path to your private key.
