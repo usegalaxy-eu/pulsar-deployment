@@ -1,1 +1,8 @@
-provider "openstack" {version = "v1.22.0"}
+terraform {
+  required_providers {
+    openstack = {
+      source = "terraform-provider-openstack/openstack"
+      version = "1.48.0"
+    }
+  }
+}

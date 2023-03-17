@@ -1,0 +1,34 @@
+---
+
+assign_ids: none
+conda_auto_init: false
+conda_auto_install: false
+container_image_cache_path: {{ pulsar_container_image_cache_path }}
+dependency_resolvers_config_file: dependency_resolvers_conf.xml
+job_metrics_config_file: {{ pulsar_root }}/config/job_metrics_conf.xml
+managers:
+    benchmarking:
+        submit_universe: vanilla
+        type: queued_condor
+    production:
+        submit_universe: vanilla
+        type: queued_condor
+        preprocess_action_max_retries: 10
+        preprocess_action_interval_start: 2
+        preprocess_action_interval_step: 2
+        preprocess_action_interval_max: 30
+        postprocess_action_max_retries: 10
+        postprocess_action_interval_start: 2
+        postprocess_action_interval_step: 2
+        postprocess_action_interval_max: 30
+    test:
+        submit_universe: vanilla
+        type: queued_condor
+message_queue_url: {{ message_queue_url }}
+min_polling_interval: 0.5
+persistence_directory: {{ pulsar_data_path }}/persisted_data
+staging_directory: {{ pulsar_data_path }}/staging
+tool_dependency_dir: {{ pulsar_data_path }}/tools/
+
+
+

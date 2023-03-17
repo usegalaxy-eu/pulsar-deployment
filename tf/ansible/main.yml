@@ -1,0 +1,60 @@
+---
+- name: Install HTCondor Central Manager on Pulsar
+  become: yes
+  hosts: all
+
+  handlers:
+    - name: restart pulsar
+      become: yes
+      ansible.builtin.service:
+        name: pulsar
+        enabled: yes
+        state: restarted
+
+  roles:
+    - name: usegalaxy_eu.htcondor
+      vars:
+        condor_role: central-manager
+        condor_copy_template: false
+    - usegalaxy-eu.bashrc
+
+  pre_tasks:
+    - name: Restart autofs
+      ansible.builtin.systemd:
+        name: autofs.service
+        state: restarted
+  tasks:
+    - name: import cron tasks
+      include_tasks: cron.yml
+
+    - name: import scripts tasks
+      import_tasks: scripts.yml
+      become_user: pulsar
+      become: yes
+
+    - name: import metrics tasks
+      import_tasks: metrics.yml
+      become: yes
+
+    - name: Create container image cache path
+      file:
+        path: "{{ pulsar_container_image_cache_path }}"
+        state: directory
+        mode: '0775'
+        owner: pulsar
+        group: pulsar 
+      become_user: pulsar
+      become: yes
+
+    - name: Copy Pulsar application configuration file
+      ansible.builtin.template:
+        src: "templates/app.yml.j2"
+        dest: "{{ pulsar_root }}/config/app.yml"
+        force: yes
+        backup: yes
+        mode: 0700
+        owner: pulsar
+        group: pulsar
+      notify: restart pulsar
+      become: yes
+

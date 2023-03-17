@@ -1,0 +1,16 @@
+---
+- name: Get all users
+  getent:
+    database: passwd
+    split: ':'
+
+- name: Debug info when user does not exist
+  debug:
+    msg: "INFO: User {{ item.uname }} does not exist"
+  loop: "{{ bashrc_users }}"
+  when: (not item.uname in getent_passwd.keys())
+
+- name: Add/Update bashrc
+  include_tasks: bashrc.yml
+  loop: "{{ bashrc_users }}"
+  when: (item.uname in getent_passwd.keys())

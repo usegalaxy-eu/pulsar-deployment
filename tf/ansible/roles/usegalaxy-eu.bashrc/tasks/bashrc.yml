@@ -1,0 +1,64 @@
+---
+- name: Check and add/update bashrc when user user exists
+  block:
+    - name: Check for bashrc
+      stat:
+        path: "{{ item.uhome }}/.bashrc"
+      register: bashrc_stat_out
+
+    - name: Copy default bashrc when not existing
+      copy:
+        src: /etc/skel/.bashrc
+        dest: "{{ item.uhome }}/.bashrc"
+        remote_src: yes
+        mode: 0640
+        owner: "{{ item.uname }}"
+        group: "{{ item.gname }}"
+      when: not bashrc_stat_out.stat.exists
+
+    - name: Check for bashprofile
+      stat:
+        path: "{{ item.uhome }}/.bash_profile"
+      register: bashprofile_stat_out
+
+    - name: Check for profile
+      stat:
+        path: "{{ item.uhome }}/.profile"
+      register: profile_stat_out
+
+    - name: Copy default bashprofile when not existing
+      copy:
+        src: /etc/skel/.bash_profile
+        dest: "{{ item.uhome }}/.bash_profile"
+        remote_src: yes
+        mode: 0640
+        owner: "{{ item.uname }}"
+        group: "{{ item.gname }}"
+      when: not bashprofile_stat_out.stat.exists and not profile_stat_out.stat.exists
+
+    - name: Insert some aliases and functions
+      blockinfile:
+        path: "{{ item.uhome }}/.bashrc"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK"
+        content: |
+          function change_to_wd (){
+          USAGE="Please provide a Galaxy job ID or a Condor job ID"
+          if (( $# == 0 )); then
+              echo $USAGE
+              return 0;
+          fi
+
+          JID=$1
+          JWD={{ pulsar_data_path }}/staging/$JID
+          if [[ $? -ne 0 || ! -d $JWD ]]; then
+              echo "INFO: Could not find the job working directory for job $JID"
+              return 1
+          fi
+          cd $JWD
+          }
+
+          alias ll='ls -l'
+          alias lp='sudo journalctl -f -u pulsar.service'
+          alias rp='sudo systemctl restart pulsar.service'
+          alias chg2wd='change_to_wd'
+          alias chg2jwd='change_to_jwd'

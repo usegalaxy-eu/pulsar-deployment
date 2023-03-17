@@ -1,0 +1,7 @@
+Universe = vanilla
+Executable = /data/share/scripts/test.sh
+Log = test.$(process).log
+Output = test.$(process).out
+Error = test.$(process).err
+request_cpus = 1
+Queue 10
