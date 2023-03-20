@@ -4,6 +4,6 @@ data "openstack_images_image_v2" "vgcn-image" {
 }
 
 data "openstack_images_image_v2" "vgcn-image-gpu" {
-  //name = "${var.image["name"]}"
+  //name = "${var.gpu_image["name"]}"
   most_recent = true
 }

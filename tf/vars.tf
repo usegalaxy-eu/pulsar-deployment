@@ -2,21 +2,21 @@
 // All variables in < > should be checked and personalized
 
 variable "nfs_disk_size" {
-  default = 500
+  default = 3
 }
 
 variable "flavors" {
   type = map
   default = {
     "central-manager" = "<m1.medium>"
-    "nfs-server" = "<m1.medium>"
-    "exec-node" = "<m1.xlarge>"
-    "gpu-node" = "<m1.small>"
+    "nfs-server"      = "<m1.medium>"
+    "exec-node"       = "<m1.xlarge>"
+    "gpu-node"        = "<m1.small>"
   }
 }
 
 variable "exec_node_count" {
-  default = 4
+  default = 2
 }
 
 variable "gpu_node_count" {
@@ -26,29 +26,29 @@ variable "gpu_node_count" {
 variable "image" {
   type = map
   default = {
-    "name" = "vggp-v60-j224-e0d36d08062d-dev"
-    "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-v60-j224-e0d36d08062d-dev.raw" 
+    "name"             = "vggp-v60-j225-1a1df01ec8f3-dev"
+    "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-v60-j225-1a1df01ec8f3-dev.raw"
     // you can check for the latest image on https://usegalaxy.eu/static/vgcn/ and replace this
     "container_format" = "bare"
-    "disk_format" = "raw"
-   }
+    "disk_format"      = "raw"
+  }
 }
 
-variable "image" {
+variable "gpu_image" {
   type = map
   default = {
-    "name" = "vggp-gpu-v60-j15-521c5243b234-dev"
-    "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-gpu-v60-j15-521c5243b234-dev.raw" 
+    "name"             = "vggp-gpu-v60-j16-4b8cbb05c6db-dev"
+    "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-gpu-v60-j16-4b8cbb05c6db-dev.raw"
     // you can check for the latest image on https://usegalaxy.eu/static/vgcn/ and replace this
     "container_format" = "bare"
-    "disk_format" = "raw"
-   }
+    "disk_format"      = "raw"
+  }
 }
 
 variable "public_key" {
   type = map
   default = {
-    name = "<your_VGCN_key>"
+    name   = "<your_VGCN_key>"
     pubkey = "<your public key>"
   }
 }
@@ -79,15 +79,15 @@ variable "secgroups" {
 }
 
 variable "public_network" {
-  default  = "<public>"
+  default = "<public>"
 }
 
 variable "private_network" {
   type = map
-  default  = {
-    name = "<vgcn-private>"
+  default = {
+    name        = "<vgcn-private>"
     subnet_name = "<vgcn-private-subnet>"
-    cidr4 = "<192.52.32.0/20>" //This is important to make HTCondor work
+    cidr4       = "<192.52.32.0/20>" //This is important to make HTCondor work
   }
 }
 
