@@ -26,8 +26,27 @@ into the `vars.tf` file where you can change them as you need.
 - An OpenStack Deployment where you want to launch VGCN
 - API access to this OpenStack
 - [Terraform](https://www.terraform.io/intro/getting-started/install.html)
-- The latest VGGP image ([from us](https://usegalaxy.eu/static/vgcn/), or [compiled yourself](https://github.com/usegalaxy-eu/vgcn/tree/passordless))
+- The latest VGGP image ([from us](https://usegalaxy.eu/static/vgcn/), or [compile it yourself](https://github.com/usegalaxy-eu/vgcn/))
 - (Optional) A Galaxy instance which will use this cluster
+
+## Overview
+
+The workflow to create your own pulsar endpoint would be:
+
+1. Fork this repository.
+1. Adjust terraform variables
+    [`vars.tf`](https://github.com/usegalaxy-eu/pulsar-deployment/blob/public/tf/vars.tf) and the
+    [Ansible directory](https://github.com/usegalaxy-eu/pulsar-deployment/tree/public/tf/ansible)
+    accordingly.
+3. Request RabbitMQ credentials from UseGalaxy.eu.
+4. Launch the instance by applying terraform with the secrets:
+
+```bash
+terraform apply -var "pvt_key=~/.ssh/<key>" -var "condor_pass=<condor-passord>" -var "mq_string=pyamqp://<pulsar>:<password>@mq.galaxyproject.eu:5671//pulsar/<pulsar>?ssl=1"
+```
+
+This way Pulsar will be deployed in one step and the secrets will not live in a terraform state file,
+they can be stored in a vault or password manager instead.
 
 ## Setup
 
