@@ -29,25 +29,6 @@ into the `vars.tf` file where you can change them as you need.
 - [Terraform](https://www.terraform.io/)
 - The latest VGGP image ([here](https://usegalaxy.eu/static/vgcn/))
 
-## Overview
-
-The workflow to create your own pulsar endpoint would be:
-
-1. Fork this repository.
-1. Adjust terraform variables
-    [`vars.tf`](https://github.com/usegalaxy-eu/pulsar-deployment/blob/public/tf/vars.tf) and the
-    [Ansible directory](https://github.com/usegalaxy-eu/pulsar-deployment/tree/public/tf/ansible)
-    accordingly.
-3. Request RabbitMQ credentials from UseGalaxy.eu.
-4. Launch the instance by applying terraform with the secrets:
-
-```bash
-terraform apply -var "pvt_key=~/.ssh/<key>" -var "condor_pass=<condor-passord>" -var "mq_string=pyamqp://<pulsar>:<password>@mq.galaxyproject.eu:5671//pulsar/<pulsar>?ssl=1"
-```
-
-This way Pulsar will be deployed in one step and the secrets will not live in a terraform state file,
-they can be stored in a vault or password manager instead.
-
 ## Setup
 
 You will need to export the normal OpenStack environment variables, e.g.:
@@ -90,14 +71,19 @@ If you want to disable the built-in NFS server and supply your own, simply:
 The workflow for deploying new pulsar endpoints would be now as follows:
 
 1. Fork this repository
-2. Change the `vars.tf`](./tf/vars.tf) file in terraform.
-3. Provide a SSH Key pair. THe public key has to be configured in the vars.tf as `publik_key` entry. The private key is needed in the terraform apply step.
-4. Request RabbitMQ user/vhost with password from usegalaxy.eu
-5. Launch the instance by applying terraform with the secrets: condor password, amqp string and path to your private key.
+1. Change the [`vars.tf`](./tf/vars.tf) file in terraform.
+1. Provide a SSH Key pair. The public key has to be configured in the `vars.tf` as
+    `publik_key` entry. The private key is needed in the terraform apply step.
+1. Request RabbitMQ credentials from UseGalaxy.eu.
+1. Launch the instance by applying terraform with the secrets:
+    condor password, `amqp` string and path to your private key.
 
 ```bash
-terraform apply -var "pvt_key=~/.ssh/theKey" -var "condor_pass=theirCondorPW" -var "mq_string=pyamqp://their_new_pulsar:thePassword@mq.galaxyproject.eu:5671//pulsar/their_new_pulsar?ssl=1"
+terraform apply -var "pvt_key=~/.ssh/<key>" -var "condor_pass=<condor-passord>" -var "mq_string=pyamqp://<pulsar>:<password>@mq.galaxyproject.eu:5671//pulsar/<pulsar>?ssl=1"
 ```
+
+This way Pulsar will be deployed in one step and the secrets will not live in
+a terraform state file, they can be stored in a vault or password manager instead.
 
 ## LICENSE
 
