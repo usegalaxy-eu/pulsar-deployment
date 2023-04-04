@@ -75,6 +75,11 @@ resource "openstack_compute_instance_v2" "exec-node" {
                 condor_copy_template: false
                 condor_host: ${openstack_compute_instance_v2.central-manager.network.1.fixed_ip_v4}
                 condor_password: ${var.condor_pass}
+          tasks:
+            - name: Disable pulsar
+              systemd:
+                name: pulsar
+                state: stopped 
 
       owner: centos:centos
       path: /home/centos/condor.yml
