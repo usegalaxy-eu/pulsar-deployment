@@ -1,11 +1,12 @@
-# UseGalaxy.eu VGCN Terraform Plan
+# UseGalaxy.eu Terraform recipes for Pulsar Endpoint
 
-We've built  "virtual galaxy compute nodes" (VGCN), a single very generic image
-which has all of the required components (docker, singularity, autofs, CVMFS)
-to act as a galaxy compute node as part of a condor cluster. The terraform
-plans in this repository define how these images can be deployed to OpenStack.
+The  "virtual galaxy compute nodes" (VGCN) is a single very generic image
+which has all of the required components (pulsar, docker, singularity, autofs, CVMFS)
+to build a Pulsar Network endpoint with a condor cluster. The terraform
+plans in this repository define how these images can be deployed to OpenStack,
+install and configure the HTCondor cluster and, finally, properly configure Pulsar
+to accept job from Galaxy.
 You can read more about [terraform on their site.](https://www.terraform.io/)
-We use it in lieu of manually launching VMs on openstack or ansible/custom
 scripts to launch VMs since those do not provide a declarative workflow.
 
 When you deploy this onto your OpenStack, this is just a normal HTCondor
@@ -16,7 +17,7 @@ The terraform file defines three "resources":
 
 - an NFS server
 - a central manager
-- an exec node
+- one or more exec nodes
 
 Each resource has a couple of different parameters, we have abstracted these
 into the `vars.tf` file where you can change them as you need.
@@ -25,9 +26,8 @@ into the `vars.tf` file where you can change them as you need.
 
 - An OpenStack Deployment where you want to launch VGCN
 - API access to this OpenStack
-- [Terraform](https://www.terraform.io/intro/getting-started/install.html)
-- The latest VGGP image ([from us](https://usegalaxy.eu/static/vgcn/), or [compiled yourself](https://github.com/usegalaxy-eu/vgcn/tree/passordless))
-- (Optional) A Galaxy instance which will use this cluster
+- [Terraform](https://www.terraform.io/)
+- The latest VGGP image ([here](https://usegalaxy.eu/static/vgcn/))
 
 ## Setup
 
@@ -46,7 +46,7 @@ export OS_USERNAME=...
 You'll need to upload a VGCN image to your openstack, prebuilt versions are
 supplied [by UseGalaxy.eu](https://usegalaxy.eu/static/vgcn/).
 
-Next you'll want to customize some of the variables in [`vars.tf`](./vars.tf).
+Next you'll want to customize some of the variables in [`vars.tf`](./tf/vars.tf).
 
 Variable          | Default Value          | Purpose
 --------          | -------------          | -------
@@ -66,58 +66,24 @@ If you want to disable the built-in NFS server and supply your own, simply:
 2. Change every autofs entry to point to your mount points and your NFS
    server's name/ip address.
 
-## Launching the VGCN Cluster
+## Configuring a new Pulsar endpoint
 
+The workflow for deploying new pulsar endpoints would be now as follows:
+
+1. Fork this repository
+1. Change the [`vars.tf`](./tf/vars.tf) file in terraform.
+1. Provide a SSH Key pair. The public key has to be configured in the `vars.tf` as
+    `publik_key` entry. The private key is needed in the terraform apply step.
+1. Request RabbitMQ credentials from UseGalaxy.eu.
+1. Launch the instance by applying terraform with the secrets:
+    condor password, `amqp` string and path to your private key.
+
+```bash
+terraform apply -var "pvt_key=~/.ssh/<key>" -var "condor_pass=<condor-passord>" -var "mq_string=pyamqp://<pulsar>:<password>@mq.galaxyproject.eu:5671//pulsar/<pulsar>?ssl=1"
 ```
-terraform apply
-```
 
-## Configuring Galaxy to Talk to VGCN
-
-1. Install HTCondor on your Galaxy head node which will be submitting jobs to VGCN.
-2. Write the following to `/etc/condor/condor_config.local`:
-
-    ```ini
-    CONDOR_HOST = <ip address where you can reach VGCN Central Manager>
-    ALLOW_WRITE = localhost
-    ALLOW_READ = $(ALLOW_WRITE)
-    ALLOW_NEGOTIATOR = localhost
-    ALLOW_OWNER = $(ALLOW_ADMINISTRATOR)
-    ALLOW_CLIENT = *
-    DAEMON_LIST = COLLECTOR, MASTER, NEGOTIATOR, SCHEDD
-    FILESYSTEM_DOMAIN = vgcn
-    UID_DOMAIN = vgcn
-    TRUST_UID_DOMAIN = True
-    SOFT_UID_DOMAIN = True
-    # http://research.cs.wisc.edu/htcondor/manual/v8.6/3_5Configuration_Macros.html#sec:Collector-Config-File-Entries
-    # Keep classads for only 5 minutes which should mean dead cloud nodes are expired much faster.
-    CLASSAD_LIFETIME = 300
-    # Try and consider new negotations a little bit sooner?
-    NEGOTIATOR_INTERVAL = 30
-    ```
-
-3. Restart HTCondor on that host
-4. Configure galaxy to talk to condor:
-
-    ```xml
-    <?xml version="1.0"?>
-    <job_conf>
-        <plugins>
-            <plugin id="condor" type="runner" load="galaxy.jobs.runners.condor:CondorJobRunner" />
-        </plugins>
-        <handlers default="handlers">
-            <!--
-            <handler id="handler0" tags="handlers"/>
-            ...
-            -->
-        </handlers>
-        <destinations default="condor">
-            <destination id="condor" runner="condor"/>
-        </destinations>
-    </job_conf>
-    ```
-
-5. Galaxy should store files on the NFS server that is being used, so the cluster has access to it.
+This way Pulsar will be deployed in one step and the secrets will not live in
+a terraform state file, they can be stored in a vault or password manager instead.
 
 ## LICENSE
 
