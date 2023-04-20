@@ -27,6 +27,7 @@ into the `vars.tf` file where you can change them as you need.
 - An OpenStack Deployment where you want to launch VGCN
 - API access to this OpenStack
 - [Terraform](https://www.terraform.io/)
+- [Ansible](https://www.ansible.com/)
 - The latest VGGP image ([here](https://usegalaxy.eu/static/vgcn/))
 
 ## Setup
