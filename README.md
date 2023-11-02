@@ -58,7 +58,7 @@ image             | ...                    | The name and the source url of the 
 `exec_node_count` | `2`                    | Number of exec nodes.
 `public_key`      | ...                    | SSH public key to use to access computing instances.
 `secgroups`       | ...                    | We have built some default rules for network access. Currently these are extremely broad, we may change that in the future. Alternatively you can supply your own preferred security groups here.
-`network`         | `galaxy-net`           | The network to launch images in.
+`network`         | `galaxy-net`           | The network to connect the nodes to.
 `nfs_disk_size`   | `3`                    | NFS server disk size in GB.
 
 If you want to disable the built-in NFS server and supply your own, simply:
@@ -74,7 +74,7 @@ The workflow for deploying new pulsar endpoints would be now as follows:
 1. Fork this repository
 1. Change the [`vars.tf`](./tf/vars.tf) file in terraform.
 1. Provide a SSH Key pair. The public key has to be configured in the `vars.tf` as
-    `publik_key` entry. The private key is needed in the terraform apply step.
+    `public_key` entry. The private key is needed in the terraform apply step.
 1. Request RabbitMQ credentials from UseGalaxy.eu.
 1. Launch the instance by applying terraform with the secrets:
     condor password, `amqp` string and path to your private key.
