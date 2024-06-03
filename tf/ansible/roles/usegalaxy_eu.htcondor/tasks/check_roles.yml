@@ -1,0 +1,42 @@
+---
+- name: Test if manager role is present
+  ansible.builtin.command: grep -nr "use role:get_htcondor_central_manager" /etc/condor/config.d
+  register: manager
+  failed_when: "manager.rc == 2"
+  ignore_errors: true
+
+- debug:
+    msg: "Central manager role installed."
+  when: manager.stdout | length > 0
+
+- debug:
+    msg: "Central manager role not installed."
+  when: manager.rc == 1
+
+- name: Test if submit role is present
+  ansible.builtin.command: grep -nr "use role:get_htcondor_submit" /etc/condor/config.d
+  register: submit
+  failed_when: "submit.rc == 2"
+  ignore_errors: true
+
+- debug:
+    msg: "Submit role installed."
+  when: submit.stdout | length > 0
+
+- debug:
+    msg: "Submit role not installed."
+  when: submit.rc == 1
+
+- name: Test if execute role is present
+  ansible.builtin.command: grep -nr "use role:get_htcondor_execute" /etc/condor/config.d
+  register: execute
+  failed_when: "execute.rc == 2"
+  ignore_errors: true
+
+- debug:
+    msg: "Execute role installed."
+  when: execute.stdout | length > 0
+
+- debug:
+    msg: "Execute role not installed."
+  when: execute.rc == 1

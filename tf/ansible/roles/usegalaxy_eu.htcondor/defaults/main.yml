@@ -1,0 +1,76 @@
+---
+condor_daemons:
+    - COLLECTOR
+    - MASTER
+    - NEGOTIATOR
+    - SCHEDD
+
+condor_extra: |
+    # https://htcondor.readthedocs.io/en/latest/admin-manual/configuration-macros.html
+    ########
+    # condor_collector
+    ########
+    # The default maximum age in seconds for ClassAds collected by the condor_collector.
+    # ClassAds older than the maximum age are discarded by the condor_collector as stale. It is defined in seconds.
+    # CLASSAD_LIFETIME = 900
+    ########
+    # condor_negotiator
+    ########
+    # Sets how often the condor_negotiator starts a negotiation cycle. It is defined in seconds.
+    # NEGOTIATOR_INTERVAL = 60
+    # This macro determines how often the condor_negotiator daemon sends a ClassAd update to the condor_collector. It is defined in seconds.
+    # NEGOTIATOR_UPDATE_INTERVAL = 300
+    ########
+    # condor_master
+    ########
+    # This macro determines how often the condor_master sends a ClassAd update to the condor_collector. It is defined in seconds
+    # MASTER_UPDATE_INTERVAL = 300
+    ########
+    # condor_schedd
+    ########
+    # This macro determines the maximum interval for both how often the condor_schedd sends a ClassAd update to the
+    # condor_collector and how often the condor_schedd daemon evaluates jobs. It is defined in terms of seconds
+    # SCHEDD_INTERVAL = 300
+    # This integer-valued macro works together with the JOB_START_COUNT macro to throttle job starts.
+    # The condor_schedd daemon starts $(JOB_START_COUNT) jobs at a time, then delays for $(JOB_START_DELAY) seconds
+    # before starting the next set of jobs. This setting is defined in terms of seconds
+    # JOB_START_DELAY = 0
+    # This macro works together with the JOB_START_DELAY macro to throttle job starts.
+    # The default and minimum values for this integer configuration variable are both 1.
+    # JOB_START_COUNT = 1
+    ########
+    # condor_startd
+    ########
+    # Determines how often the condor_startd should send a ClassAd update to the condor_collector.  It is defined in terms of seconds
+    # UPDATE_INTERVAL = 300
+
+
+# condor_role: submit
+# condor_role: central-manager
+condor_role: execute
+
+# reinstalls condor with role and newest version if true
+condor_enforce_role: false
+
+condor_host: example.org
+
+condor_password: IForgotToChangeMyPassword:/
+
+
+condor_stable_repo:
+    dest: /etc/yum.repos.d/htcondor-8.8-stable.repo
+
+condor_copy_template: true
+
+epel_repofile_path: "/etc/yum.repos.d/epel.repo"
+
+condor_system_periodic_hold: "{{ 30 * 24 * 60 * 60}}"
+condor_system_periodic_remove: "{{ 7 * 24 * 60 * 60}}"
+
+# see https://htcondor.readthedocs.io/en/v8_8/admin-manual/configuration-macros.html#shared-file-system-configuration-file-macros
+condor_fs_domain: put_here_your_string
+condor_uid_domain: put_here_your_string
+
+# Specify a version number, as returned in condor_version command.
+# It will update automatically to the NEWEST version if the installed condor version is lower
+condor_minimal_version: 10.2.0

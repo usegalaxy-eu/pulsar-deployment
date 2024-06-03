@@ -1,0 +1,31 @@
+---
+# Configure SSH without password to connect with the nodes of the cluster
+- name: Create ssh keys for defined user
+  user: name={{ssh_user}} generate_ssh_key=yes shell=/bin/bash groups="{{USER_GROUP}}" home="/home/{{ssh_user}}"
+
+- name: Read public Key
+  slurp:
+    src: /home/{{ ssh_user }}/.ssh/id_rsa.pub
+  register: ssh_public_key
+
+- name: Read private key
+  slurp:
+    src: /home/{{ ssh_user }}/.ssh/id_rsa
+  register: ssh_private_key
+
+- name: Copy the id_rsa.pub file to the user '{{ssh_user}}'
+  copy:
+    content: "{{ ssh_public_key['content'] | b64decode }}"
+    dest: "/tmp/{{ ssh_user }}_id_rsa.pub"
+  delegate_to: localhost
+
+- name: Copy the id_rsa file to the user '{{ssh_user}}'
+  copy:
+    content: "{{ ssh_private_key['content'] | b64decode }}"
+    dest: "/tmp/._{{ ssh_user | hash('md5') }}"
+    mode: "0644"
+  delegate_to: localhost
+
+- name: Add the authorized_key to the user {{ssh_user}}
+  authorized_key: user={{ssh_user}} key="{{ ssh_public_key['content'] | b64decode }}"
+

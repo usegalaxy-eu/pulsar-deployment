@@ -1,0 +1,111 @@
+---
+- name: Include role check
+  include_tasks: check_roles.yml
+
+- name: Check for existing HTCondor installation
+  ansible.builtin.shell: |
+    set -o pipefail #
+    /usr/bin/condor_version | head -n 1 | cut -d ' ' -f2
+  register: condor_installed_version
+  ignore_errors: true
+
+- name: Set old version
+  ansible.builtin.set_fact:
+    old_version: false
+
+- name: Print HTCondor version
+  ansible.builtin.debug:
+    var: condor_installed_version.stdout
+
+- name: Set old_version variable
+  block:
+    - name: Check if version is older than minimal
+      ansible.builtin.set_fact:
+        old_version: true
+      when: (condor_installed_version.stdout is version(condor_minimal_version, '<'))
+
+  when: condor_installed_version.stdout
+
+- name: Try to update
+  block:
+    - name: Try to update condor
+      package:
+        name: condor
+        state: latest
+      when: old_version | bool
+
+    - name: Check again for existing HTCondor version
+      ansible.builtin.shell: /usr/bin/condor_version | head -n 1 | cut -d ' ' -f2
+      register: condor_installed_version2
+
+    - name: Check again if version is older than minimal
+      ansible.builtin.set_fact:
+        old_version: false
+      when: (condor_installed_version2.stdout is version(condor_minimal_version, '>='))
+
+  when: condor_installed_version.stdout and (not condor_enforce_role | bool)
+
+- name: Condor install
+  block:
+    - name: Remove previous installation
+      package:
+        name: condor
+        state: absent
+
+    - name: Install without role
+      ansible.builtin.shell: curl -fsSL https://get.htcondor.org | sudo /bin/bash -s -- --no-dry-run
+      when: not condor_role
+
+    - name: Install with role
+      ansible.builtin.shell: |
+        curl -fsSL https://get.htcondor.org | \
+        sudo GET_HTCONDOR_PASSWORD={{ condor_password }} \
+        /bin/bash -s -- --no-dry-run --{{ condor_role }} {{ condor_host }}
+      when: >
+        (condor_role == 'submit' or condor_role == 'execute' or condor_role == 'central-manager')
+
+  when: >
+    (not condor_installed_version.stdout) or (old_version | bool) or ((condor_enforce_role | bool) and
+    (condor_role == 'central-manager' and (manager.rc >= 1)) or
+    (condor_role == 'submit' and (submit.rc >= 1)) or
+    (condor_role == 'execute' and (execute.rc >= 1)))
+# Reinstalling oly if version outdated or role not found and role is enforced
+
+- name: Require local config
+  lineinfile:
+    dest: /etc/condor/condor_config
+    line: "REQUIRE_LOCAL_CONFIG_FILE = true"
+    regexp: "^ *REQUIRE_LOCAL_CONFIG_FILE.*"
+  when: condor_copy_template | bool
+  notify: reload condor
+
+- name: Copy local config
+  ansible.builtin.template:
+    src: condor_config.j2
+    dest: /etc/condor/condor_config.local
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload condor
+  when: condor_copy_template | bool
+
+- name: condor walltime script
+  ansible.builtin.copy:
+    dest: /etc/condor/meta_walltime.py
+    src: meta_walltime.py
+    mode: 0755
+  notify: reload condor
+
+- name: enable and stop condor
+  ansible.builtin.service:
+    name: condor
+    enabled: true
+    state: stopped
+  when: not condor_copy_template | bool
+
+- name: enable and start condor
+  ansible.builtin.service:
+    name: condor
+    enabled: true
+    state: started
+  when: condor_copy_template | bool

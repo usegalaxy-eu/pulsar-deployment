@@ -1,0 +1,36 @@
+---
+# HTCondor version:
+#   https://research.cs.wisc.edu/htcondor/repo/keys/
+# Example values:
+#   9.0
+#   9.1
+#   9.x
+#   10.0
+#   10.x
+#   23.0
+#   23.x
+htcondor_version: 10.x
+
+# Domain config
+# https://htcondor.readthedocs.io/en/latest/users-manual/submitting-a-job.html#submitting-jobs-using-a-shared-file-system
+htcondor_domain: ""
+
+# HTCondor roles:
+# Are overwrited it htcondor_type_of_node is set
+htcondor_role_manager: true
+htcondor_role_submit: true
+htcondor_role_execute: true
+
+# Condor password (to be added to Vault?)
+# it can also be set from CLI:
+# ansible-playbook playbook-htcondor.yml --user cloudadm --extra-vars htcondor_password=changeme
+htcondor_password: changeme
+
+# Type of node to install: front, wn
+htcondor_type_of_node: 'front'
+
+# Server name
+htcondor_server: "{{ ansible_fqdn }}"
+
+# Default ssh user
+htcondor_ssh_user: condoruser

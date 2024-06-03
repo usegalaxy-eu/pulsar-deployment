@@ -1,0 +1,10 @@
+---
+- name: Include "{{ansible_os_family}}" ssh recipe
+  include_tasks: "{{ansible_os_family}}.yaml"
+
+- name: Include "{{ssh_type_of_node}}" ssh recipe
+  include_tasks: "{{ssh_type_of_node}}.yaml"
+
+- name: Update known hosts
+  template: src=ssh_known_hosts.conf.j2 dest=/etc/ssh/ssh_known_hosts
+  changed_when: false

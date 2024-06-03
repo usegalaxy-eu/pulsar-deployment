@@ -1,0 +1,10 @@
+---
+
+- name: Setup with Script if package version is not pinned
+  include_tasks: latest.yml
+  when: condor_package_label is not defined
+
+- name: Setup with repos if package version is undefined
+  include_tasks: pinned_version.yml
+  when: condor_package_label is defined and ansible_facts['distribution_major_version']|int < 9
+  # because this part is not updated to EL9 yet

@@ -1,25 +1,25 @@
 resource "openstack_compute_instance_v2" "central-manager" {
 
   name            = "${var.name_prefix}central-manager${var.name_suffix}"
-  flavor_name     = "${var.flavors["central-manager"]}"
-  image_id        = "${data.openstack_images_image_v2.vgcn-image.id}"
-  key_pair        = "${openstack_compute_keypair_v2.my-cloud-key.name}"
-  security_groups = "${var.secgroups_cm}"
+  flavor_name     = var.flavors["central-manager"]
+  image_id        = data.openstack_images_image_v2.vgcn-image.id
+  key_pair        = openstack_compute_keypair_v2.my-cloud-key.name
+  security_groups = var.secgroups_cm
 
   network {
-    uuid = "${data.openstack_networking_network_v2.external.id}"
+    uuid = data.openstack_networking_network_v2.external.id
   }
   network {
-    uuid = "${data.openstack_networking_network_v2.internal.id}"
+    uuid = data.openstack_networking_network_v2.internal.id
   }
-  
+
   provisioner "local-exec" {
     command = <<-EOF
-      ansible-galaxy install -p ansible/roles usegalaxy_eu.htcondor
-      sleep 60
+      ansible-galaxy install -p ansible/roles ansible-role-htcondor
+      sleep 450
         ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -b -i '${self.access_ip_v4},' \
         --private-key ${var.pvt_key} --extra-vars='condor_ip_range=${var.private_network.cidr4}
-        condor_host=${self.network.1.fixed_ip_v4} condor_password=${var.condor_pass}
+        condor_host=${self.network.1.fixed_ip_v4} htcondor_password=${var.condor_pass}
         message_queue_url="${var.mq_string}"' \
         ansible/main.yml
     EOF

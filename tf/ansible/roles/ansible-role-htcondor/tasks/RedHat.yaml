@@ -1,0 +1,54 @@
+---
+# These steps are based on:
+# https://research.cs.wisc.edu/htcondor/get/
+
+- name: Install pre-requisites
+  ansible.builtin.package:
+    name:
+      - procps-ng
+    state: present
+
+- name: Add EPEL GPG key
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}
+
+- name: Add YUM repository for EPEL
+  ansible.builtin.yum:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm
+    state: present
+
+- name: Install pre-requisites in RHEL8+
+  ansible.builtin.package:
+    name:
+      - dnf-plugins-core
+    state: present
+  when: ansible_distribution_major_version|int >= 8
+
+- name: Add HTCondor GPG key
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://research.cs.wisc.edu/htcondor/repo/keys/HTCondor-{{ htcondor_version }}-Key
+
+- name: Add YUM repository for HTCondor
+  ansible.builtin.yum:
+    name: https://research.cs.wisc.edu/htcondor/repo/{{ htcondor_version }}/htcondor-release-current.el{{ ansible_distribution_major_version }}.noarch.rpm
+    state: present
+
+- name: Enable extra repositories in RHEL8
+  set_fact:
+    repo_to_enable: "powertools"
+  when: ansible_distribution_major_version|int == 8
+
+- name: Enable extra repositories in RHEL9
+  set_fact:
+    repo_to_enable: "crb"
+  when: ansible_distribution_major_version|int == 9
+
+- name: Install condor via package manager
+  ansible.builtin.yum:
+    name:
+      - condor
+    state: present
+    update_cache: true
+    enablerepo: "{{ repo_to_enable }}"

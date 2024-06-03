@@ -1,0 +1,22 @@
+galaxy_info:
+  author: amcaar@i3m.upv.es
+  description: Install HTCondor cluster
+  company:  GRyCAP
+  license: Apache
+  min_ansible_version: 2.0
+  platforms:
+  - name: Ubuntu
+    versions:
+    - jammy
+    - focal
+  - name: EL
+    version:
+    - 7
+    - 8
+    - 9
+  galaxy_tags:
+    - htcondor
+    - lrms
+dependencies:
+  - { role: 'geerlingguy.ntp', ntp_config_server: [ntp.upv.es, ntp.uv.es] }
+  - { role: 'grycap.ssh', ssh_type_of_node: "{{ htcondor_type_of_node }}", ssh_user: "{{ htcondor_ssh_user }}" }

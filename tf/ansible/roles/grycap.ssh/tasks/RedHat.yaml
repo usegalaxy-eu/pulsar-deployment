@@ -1,0 +1,20 @@
+---
+- name: Install Yum ssh package
+  yum: name=openssh,openssh-clients,libselinux-python
+  when: ansible_distribution_major_version|int < 8
+
+- name: Install Yum ssh package
+  yum: name=openssh,openssh-clients,libselinux-python3
+  when: ansible_distribution_major_version|int >= 8
+
+- name: Modify sudoers file (RedHat)
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '#\s%wheel.*NOPASSWD.*'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+  when: ansible_os_family == "RedHat"
+
+- name: Set RedHat facts
+  set_fact:
+    USER_GROUP: "wheel"

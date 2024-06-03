@@ -1,0 +1,9 @@
+- name: restart htcondor
+  ansible.builtin.service:
+    name: condor
+    state: restarted
+
+- name: reload service firewalld
+  systemd:
+    name: firewalld
+    state: reloaded

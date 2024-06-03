@@ -1,0 +1,31 @@
+---
+# These steps are based on:
+# https://research.cs.wisc.edu/htcondor/get/
+
+- name: Install pre-requisites
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - gnupg
+    - apt-transport-https
+    - procps
+    - keyboard-configuration
+    - console-setup
+    - tzdata
+
+- name: Add HTCondor GPGP key
+  ansible.builtin.apt_key:
+    url: https://research.cs.wisc.edu/htcondor/repo/keys/HTCondor-{{ htcondor_version }}-Key
+    state: present
+
+- name: Add APT repository for HTCondor
+  ansible.builtin.apt_repository:
+    repo: 'deb [arch=amd64] https://research.cs.wisc.edu/htcondor/repo/ubuntu/{{ htcondor_version }} {{ ansible_distribution_release }} main'
+    state: present
+    update_cache: yes
+
+- name: Install condor via package manager
+  ansible.builtin.apt:
+    name: htcondor

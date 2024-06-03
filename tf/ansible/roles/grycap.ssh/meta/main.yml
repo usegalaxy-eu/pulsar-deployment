@@ -1,0 +1,20 @@
+galaxy_info:
+  role_name: ssh
+  namespace: grycap
+  author: alpegon3@upv.es
+  description: Install ssh
+  company:  GRyCAP
+  license: Apache
+  min_ansible_version: 2.0
+  platforms:
+  - name: EL
+    versions:
+    - 8
+    - 9
+  - name: Ubuntu
+    versions:
+    - focal
+    - jammy
+  galaxy_tags:
+    - ssh
+dependencies: []

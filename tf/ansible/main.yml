@@ -12,7 +12,7 @@
         state: restarted
 
   roles:
-    - name: usegalaxy_eu.htcondor
+    - name: ansible-role-htcondor
       vars:
         condor_role: central-manager
         condor_copy_template: false

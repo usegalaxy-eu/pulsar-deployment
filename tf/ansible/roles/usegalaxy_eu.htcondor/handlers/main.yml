@@ -1,0 +1,5 @@
+---
+- name: reload condor
+  ansible.builtin.service:
+    name: condor
+    state: reloaded

@@ -1,0 +1,5 @@
+---
+# Type of node to install: front or wn
+ssh_type_of_node: front
+# Default ssh user
+ssh_user: grycap

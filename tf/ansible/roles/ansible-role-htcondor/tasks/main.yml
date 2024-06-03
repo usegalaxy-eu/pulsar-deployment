@@ -1,0 +1,119 @@
+---
+# These steps are based on:
+# https://research.cs.wisc.edu/htcondor/get/
+
+- name: Include "{{ansible_os_family}}" HTCondor recipe
+  include_tasks: "{{ansible_os_family}}.yaml"
+
+- name: Configure HTCondor manager role
+  ansible.builtin.template:
+    src: 01-central-manager.config.j2
+    dest: /etc/condor/config.d/01-central-manager.config
+    owner: root
+    group: root
+    mode: '0644'
+  when: htcondor_role_manager
+  notify: restart htcondor
+
+- name: configure htcondor submit role
+  ansible.builtin.template:
+    src: 01-submit.config.j2
+    dest: /etc/condor/config.d/01-submit.config
+    owner: root
+    group: root
+    mode: '0644'
+  when: htcondor_role_submit
+  notify: restart htcondor
+
+- name: Configure HTCondor execute role
+  ansible.builtin.template:
+    src: 01-execute.config.j2
+    dest: /etc/condor/config.d/01-execute.config
+    owner: root
+    group: root
+    mode: '0644'
+  when: htcondor_role_execute
+  notify: restart htcondor
+
+- name: configure htcondor shared filesystem domain
+  ansible.builtin.template:
+    src: 02-domain.config.j2
+    dest: /etc/condor/config.d/02-domain.config
+    owner: root
+    group: root
+    mode: '0644'
+  when: ((htcondor_role_submit or htcondor_role_execute) and htcondor_domain != "")
+  notify: restart htcondor
+
+- name: Remove the default security configuration for HTCondor 9.0
+  ansible.builtin.file:
+    path: /etc/condor/config.d/00-htcondor-9.0.config
+    state: absent
+  when: htcondor_version is ansible.builtin.match("10") or htcondor_version is ansible.builtin.match("23")
+  notify: restart htcondor
+
+- name: Get password directory
+  ansible.builtin.command: condor_config_val SEC_PASSWORD_DIRECTORY
+  changed_when: false
+  register: directory
+
+- name: Ensure that the password directory exists
+  ansible.builtin.file:
+    path: "{{ directory.stdout }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Store Condor credentials
+  ansible.builtin.command: condor_store_cred add -c -i -
+  args:
+    creates: "/etc/condor/passwords.d/POOL"
+    stdin: "{{ htcondor_password }}"
+    stdin_add_newline: false
+
+- name: Get tokens directory
+  ansible.builtin.command: condor_config_val SEC_TOKEN_SYSTEM_DIRECTORY
+  changed_when: false
+  register: directory
+
+- name: Ensure that the tokens directory exists
+  ansible.builtin.file:
+    path: "{{ directory.stdout }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Issue Condor token
+  ansible.builtin.shell: condor_token_create -identity condor@{{ htcondor_server }} > {{ directory.stdout }}/condor@{{ htcondor_server }}
+  args:
+    creates: "{{ directory.stdout }}/condor@{{ htcondor_server }}"
+
+- name: Is firewalld installed?
+  ansible.builtin.package:
+    name:
+      - firewalld
+    state: present
+
+- name: Open port 9618 for use by HTCondor
+  ansible.posix.firewalld:
+    port: 9618/tcp
+    permanent: true
+    state: enabled
+    zone: public
+  notify: reload service firewalld
+
+- name: Open NFS port
+  ansible.posix.firewalld:
+    service: nfs
+    permanent: true
+    state: enabled
+    zone: public
+  notify: reload service firewalld
+
+- name: Start and enable htcondor service
+  ansible.builtin.service:
+    name: condor
+    state: started
+    enabled: yes
