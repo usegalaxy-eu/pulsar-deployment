@@ -1,0 +1,4 @@
+---
+roles:
+  - src: galaxyproject.pulsar
+    version: 1.0.11

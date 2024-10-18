@@ -67,3 +67,6 @@
       notify: restart pulsar
       become: yes
 
+    - name: Install additional Pulsar services
+      import_tasks: pulsar.yml
+      become: yes

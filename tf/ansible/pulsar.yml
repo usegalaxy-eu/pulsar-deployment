@@ -1,0 +1,28 @@
+---
+- name: Pulsar setup
+  vars:
+    role_runs:
+      - pulsar_systemd_service_name: pulsar_eu
+        pulsar_config_dir: "{{ pulsar_root }}/config_eu"
+        message_queue_url: REAL_MESSAGE_QUEUE_URL_EU
+        pulsar_persistence_dir: /data/share/eu/persisted_data
+        pulsar_staging_dir: /data/share/eu/staging
+      - pulsar_systemd_service_name: pulsar_be
+        pulsar_config_dir: "{{ pulsar_root }}/config_be"
+        message_queue_url: REAL_MESSAGE_QUEUE_URL_BE
+        pulsar_persistence_dir: /data/share/be/persisted_data
+        pulsar_staging_dir: /data/share/be/staging
+
+  tasks:
+    - name: Execute Pulsar role multiple times with different variables
+      include_role:
+        name: galaxyproject.puslar
+      loop: "{{ role_runs }}"
+      loop_control:
+        loop_var: role_vars
+      vars:
+        pulsar_systemd_service_name: "{{ role_vars.pulsar_systemd_service_name }}"
+        pulsar_config_dir: "{{ role_vars.pulsar_config_dir }}"
+        message_queue_url: "{{ role_vars.message_queue_url }}"
+        pulsar_persistence_dir: "{{ role_vars.pulsar_persistence_dir }}"
+        pulsar_staging_dir: "{{ role_vars.pulsar_staging_dir }}"
