@@ -21,3 +21,6 @@ name_prefix: "vgcn-mira-"
 name_suffix: ".pulsar"
 private_network_prefix: "{{ condor_ip_range }}"
 workers_group_name: "workers"
+
+# cluster utilization stats collection
+collect_status: false

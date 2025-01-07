@@ -1,0 +1,16 @@
+---
+- name: Change permissions of condor status script files
+  file:
+    path: "{{ pulsar_data_path }}/{{ item.name }}"
+    mode: "{{ item.mode }}"
+    owner: pulsar
+    group: pulsar
+  with_items:
+    - {'name': scripts/producer.py, 'mode': '0700'}
+    - {'name': scripts/cluster_util_condor.sh, 'mode': '0700'}
+
+- name: Add cron to collect stats
+  cron:
+    name: "condor stats"
+    minute: "*"
+    job: "/opt/pulsar/venv3/bin/python {{ pulsar_data_path }}/scripts/producer.py {{ pulsar_root }}/config/app.yml {{ pulsar_data_path }}/scripts/cluster_util_condor.sh"
