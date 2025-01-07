@@ -67,3 +67,8 @@
       notify: restart pulsar
       become: yes
 
+    - name: import cluster status tasks
+      import_tasks: status.yml
+      when: collect_status
+      become: yes
+
