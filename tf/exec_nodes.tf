@@ -70,7 +70,7 @@ resource "openstack_compute_instance_v2" "exec-node" {
           hosts: all
           connection: local
           roles:
-            - name: ansible-role-htcondor
+            - name: ansible-htcondor-grycap
               vars:
                 htcondor_version: 10.x
                 htcondor_type_of_node: wn
@@ -93,7 +93,7 @@ resource "openstack_compute_instance_v2" "exec-node" {
       - [ sh, -xc, "sed -i 's|localhost.localdomain|$(hostname -f)|g' /etc/telegraf/telegraf.conf" ]
       - systemctl restart telegraf
       - [ python3, -m, pip, install, ansible ]
-      - [ ansible-galaxy, install, -p, /home/centos/roles, "git+https://github.com/usegalaxy-it/ansible-role-htcondor.git"]
+      - [ ansible-galaxy, install, -p, /home/centos/roles, "git+https://github.com/usegalaxy-eu/ansible-htcondor-grycap.git"]
       - [ ansible-playbook, -i, 'localhost,', /home/centos/condor.yml]
       - systemctl start condor
       EOF

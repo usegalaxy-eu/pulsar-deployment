@@ -24,7 +24,7 @@
         state: restarted
 
   roles:
-    - role: ansible-role-htcondor
+    - role: ansible-htcondor-grycap
       vars:
         htcondor_version: "10.x"
         htcondor_type_of_node: "front"
