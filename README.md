@@ -1,7 +1,8 @@
 # UseGalaxy.eu Terraform recipes for Pulsar Endpoint
 
-### Compatibility
+>**:warning: Compatibility:**
 These changes were tested on Terraform v1.10.x. Compatibility with previous versions is not guaranteed.
+
 
 >**:warning: IMPORTANT:**  
 If you get a error like this, you might need to change the respective api version in the resource in the terraform code. (e.g. openstack_blockstorage_volume_v2 instead of v3)
