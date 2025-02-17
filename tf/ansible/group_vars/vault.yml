@@ -1,0 +1,5 @@
+ex_mqs_dict: # Edit with the right key names and message queues
+  key01: "pyamqp://galaxy_test01:password@mq.galaxyproject.eu:5671//pulsar/galaxy_test01?ssl=1"
+  key02: "pyamqp://galaxy_test02:password@mq.galaxyproject.eu:5671//pulsar/galaxy_test02?ssl=1"
+
+message_queue_url:

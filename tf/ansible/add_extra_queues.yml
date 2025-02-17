@@ -1,0 +1,165 @@
+---
+# __pulsar_remote_user - if left on ansible_user_id ssh
+# connection will fail since it will try to connect as root and vgcn images 
+# allow only the centos user
+- name: Set privilege separation default variables
+  set_fact:
+    __pulsar_remote_user: "{{ ansible_user | default(omit) }}"
+    __pulsar_become: "{{ ansible_env.SUDO_USER is defined }}"
+    __pulsar_become_user: "{{ ansible_user_id | default(omit) }}"
+
+# Creating Paths with fallback for root squashing
+
+- name: Extra pulsar dirs
+  block:
+    - name: Include pulsar role to manage paths
+      ansible.builtin.include_role:
+        name: galaxyproject.pulsar
+        tasks_from: paths.yml
+      vars:
+        pulsar_privsep_dirs:
+          - "{{ pulsar_config_dir }}"
+        pulsar_dirs:
+          - "{{ pulsar_dependencies_dir }}"
+          - "{{ pulsar_persistence_dir }}"
+          - "{{ pulsar_staging_dir }}"
+  rescue:
+    - name: Retrying to Create Pulsar user-owned directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ pulsar_user }}"
+        group: "{{ pulsar_group | default(pulsar_group) if pulsar_group is defined else pulsar_user }}"
+        mode: "0755"
+      loop: "{{ pulsar_dirs }}"
+      vars:
+        pulsar_dirs:
+          - "{{ pulsar_dependencies_dir }}"
+          - "{{ pulsar_persistence_dir }}"
+          - "{{ pulsar_staging_dir }}"
+      when: >
+        ansible_failed_task.name == "Create Pulsar user-owned directories" and
+        pulsar_data_path is defined and
+        __pulsar_become_user is defined and
+        __pulsar_become_user == "root"
+      register: results
+      become: true
+      become_user: "{{ pulsar_user }}"
+
+    - ansible.builtin.fail:
+        msg: "This error cannot be rescued, check the privilege escalation or for root squashing"
+      when: results is skipped or results is failed
+
+# Configurations tasks
+
+- name: Additional pulsar config
+  ansible.builtin.include_role:
+    name: galaxyproject.pulsar
+    tasks_from: configure.yml
+  vars:
+    pulsar_yaml_config:
+      assign_ids: none
+      conda_auto_init: false
+      conda_auto_install: false
+      container_image_cache_path: "{{ pulsar_container_image_cache_path }}"
+      dependency_resolvers_config_file: dependency_resolvers_conf.xml
+      job_metrics_config_file: >
+        "{{ pulsar_root }}/config_{{ mq_id }}/job_metrics_conf.xml"
+      managers:
+        benchmarking:
+          submit_universe: vanilla
+          type: queued_condor
+        production:
+          submit_universe: vanilla
+          type: queued_condor
+          preprocess_action_max_retries: 10
+          preprocess_action_interval_start: 2
+          preprocess_action_interval_step: 2
+          preprocess_action_interval_max: 30
+          postprocess_action_max_retries: 10
+          postprocess_action_interval_start: 2
+          postprocess_action_interval_step: 2
+          postprocess_action_interval_max: 30
+        test:
+          submit_universe: vanilla
+          type: queued_condor
+      message_queue_url: "{{ extra_mq_url }}"
+      min_polling_interval: 0.5
+    pulsar_yaml_config_default:
+      persistence_directory: "{{ pulsar_persistence_dir }}"
+      staging_directory: "{{ pulsar_staging_dir }}"
+      tool_dependency_dir: "{{ pulsar_dependencies_dir }}"
+
+# Systemds tasks
+
+- name: Systemd
+  ansible.builtin.include_role:
+    name: galaxyproject.pulsar
+    tasks_from: systemd.yml
+
+# Lineinfile is used to not change the role's template
+# and fix the unit description
+
+- name: Ensure Systemd description is right
+  ansible.builtin.lineinfile:
+    path: "/etc/systemd/system/{{ pulsar_systemd_service_name }}.service"
+    regexp: '^Description=Pulsar'
+    line: "Description=Pulsar_{{ mq_id }}"
+    insertafter: '^\[Unit\]'
+    firstmatch: true
+    state: present
+  become: true
+
+- name: systemd daemon-reload and enable/start service
+  systemd:
+    state: started
+    enabled: true
+    name: "{{ pulsar_systemd_service_name }}.service"
+    daemon_reload: yes
+  become: true
+
+# cron tasks, cannot import the original 
+# task file since the cron names must be different
+
+- name: Add cron to delete directories of successful jobs older than 60 minutes
+  cron:
+    name: "delete successful {{ mq_id }} directories"
+    minute: "21"
+    hour: "*/2"
+    job: "find {{ pulsar_data_path }}/staging/*/postprocessed -type f -amin +60 -exec dirname {} \\; | xargs rm -rf "
+
+- name: Add cron to delete directories of unsuccessful jobs older than 10 days
+  cron:
+    name: "delete unsuccessful {{ mq_id }} directories"
+    minute: "21"
+    hour: "3"
+    job: "find {{ pulsar_data_path }}/staging/ -maxdepth 1 -mindepth 1 -type d -ctime +10 -exec rm -rf {} +"
+
+- name: Add cron to restart other pulsars
+  cron:
+    name: "restart {{ pulsar_systemd_service_name }} to take care of RabbitMQ shutdown issue"
+    minute: "11"
+    hour: "6"
+    job: "sudo systemctl restart {{ pulsar_systemd_service_name }}.service"
+
+# Metrics plugins 
+# N.B.: copy_metrics_plugins won't work in here, see "all"
+
+- name: Copy job_metrics settings files for other queues
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: pulsar
+    group: pulsar
+  with_items:
+    - {src: "files/job_metrics_conf.xml", dest: "{{ pulsar_root }}/config_{{ mq_id }}/job_metrics_conf.xml"}
+
+- name: Copy metrics plugin for other queues
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: pulsar
+    group: pulsar
+  loop: "{{ metrics_plugins_to_copy }}"
+  when: (ex_mqs_metrics is defined) and (mq_id in ex_mqs_metrics)
+  become: true

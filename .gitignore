@@ -12,6 +12,11 @@
 # .tfvars files
 *.tfvars
 
+# Ansible requirements roles
+tf/ansible/roles/*
+
+!tf/ansible/roles/usegalaxy-eu.bashrc/
+!tf/ansible/roles/usegalaxy-eu.bashrc/**
 
 # End of https://www.gitignore.io/api/terraform
 .ssh_key

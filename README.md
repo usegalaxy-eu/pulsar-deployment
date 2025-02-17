@@ -1,5 +1,9 @@
 # UseGalaxy.eu Terraform recipes for Pulsar Endpoint
 
+>**:warning: Compatibility:**
+These changes were tested on Terraform v1.10.x. Compatibility with previous versions is not guaranteed.
+
+
 >**:warning: IMPORTANT:**  
 If you get a error like this, you might need to change the respective api version in the resource in the terraform code. (e.g. openstack_blockstorage_volume_v2 instead of v3)
 Please contact us if the issue persists.
@@ -108,6 +112,18 @@ terraform apply -var "pvt_key=~/.ssh/<key>" -var "condor_pass=<condor-passord>" 
 
 This way Pulsar will be deployed in one step and the secrets will not live in
 a terraform state file, they can be stored in a vault or password manager instead.
+
+### Multiple Pulsar Services
+
+To deploy multiple Pulsar services on a single node, follow the previous steps and define the `extra_mq_urls` variable in [`vars.tf`](./tf/vars.tf) with the additional RabbitMQ credentials.
+
+To deploy everything in a single step, use the following command:
+
+```bash
+terraform apply -var "pvt_key=~/.ssh/<key>" -var "condor_pass=<condor-passord>" -var "mq_string=pyamqp://<pulsar>:<password>@mq.galaxyproject.eu:5671//pulsar/<pulsar>?ssl=1" -var 'extra_mq_urls={test01="pyamqp_url01", test02="pyamqp_url02"}'
+```
+
+In this setup, the keys of the `extra_mq_urls` dictionary will be used to configure the additional Pulsar services. As with the single service deployment command the secrets will not live in a terraform state file.
 
 ## LICENSE
 

@@ -1,0 +1,6 @@
+---
+roles:
+  - src: galaxyproject.pulsar
+    version: 1.0.11
+  - src: git+https://github.com/usegalaxy-eu/ansible-htcondor-grycap.git
+    version: master
