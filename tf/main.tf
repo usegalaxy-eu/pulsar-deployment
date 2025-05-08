@@ -1,16 +1,20 @@
-resource "openstack_compute_instance_v2" "central-manager" {
-
-  name            = "${var.name_prefix}central-manager${var.name_suffix}"
-  flavor_name     = var.flavors["central-manager"]
-  image_id        = openstack_images_image_v2.vgcn-image.id
-  key_pair        = openstack_compute_keypair_v2.my-cloud-key.name
-  security_groups = var.secgroups_cm
-
-  network {
-    uuid = data.openstack_networking_network_v2.external.id
+resource "oci_core_instance" "central_manager" {
+  availability_domain = var.oracle_vars.availability_domain
+  compartment_id      = var.oracle_vars.compartment_id
+  display_name        = "${var.name_prefix}central-manager${var.name_suffix}"
+  shape               = var.shapes["central-manager"]
+  # Reference the image using the OCID
+  source_details {
+    source_type = "image"
+    source_id   = data.oci_core_images.vgcn_image.images[0].id
+    
   }
-  network {
-    uuid = openstack_networking_network_v2.internal.id
+  
+  # Networt
+  create_vnic_details {
+    subnet_id        = oci_core_subnet.internal.id
+    assign_public_ip = true
+    nsg_ids          = [oci_core_network_security_group.ingress_private.id, oci_core_network_security_group.egress_public.id, oci_core_network_security_group.public_ssh.id]
   }
 
   provisioner "local-exec" {
@@ -25,6 +29,8 @@ resource "openstack_compute_instance_v2" "central-manager" {
     EOF
   }
 
+  metadata = {
+  ssh_authorized_keys = local.ssh_public_key
   user_data = <<-EOF
     #cloud-config
     system_info:
@@ -84,4 +90,5 @@ resource "openstack_compute_instance_v2" "central-manager" {
       - [ sh, -xc, "sed -i 's|localhost.localdomain|$(hostname -f)|g' /etc/telegraf/telegraf.conf" ]
       - systemctl restart telegraf
   EOF
+}
 }

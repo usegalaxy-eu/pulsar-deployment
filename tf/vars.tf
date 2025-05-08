@@ -1,12 +1,26 @@
 // Change this file according to your cloud infrastructure and personal settings
 // All variables in < > should be checked and personalized
 
+
+variable "oracle_vars" {
+  type = map (any)
+  default = {
+    tenancy_ocid = "<fill-in-with-your-data>"
+    user_ocid = "<fill-in-with-your-data>"
+    fingerprint = "<fill-in-with-your-data>"
+    private_key_path = "<fill-in-with-your-data>"
+    region = "<fill-in-with-your-data>"
+    availability_domain = "<fill-in-with-your-data>"
+    compartment_id = "<fill-in-with-your-data>"
+  }
+  
+}
 variable "nfs_disk_size" {
-  default = 32
+  default = 100
 }
 
 # Must be available in your OpenStack tenant
-variable "flavors" {
+variable "shapes" {
   type = map(any)
   default = {
     "central-manager" = "m1.medium"
@@ -31,23 +45,17 @@ variable "image" {
 //  "name"             = "vggp-v60-j225-1a1df01ec8f3-dev"
     "name"             = "<name for that image>"
 //  "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-v60-j225-1a1df01ec8f3-dev.raw"
-    "image_source_url" = "<url-to-latest-vgcn-image>"
-    // you can check for the latest image on https://usegalaxy.eu/static/vgcn/ and replace this
-    "container_format" = "bare"
-    "disk_format"      = "raw"
+    "ocid" = "<url-to-latest-vgcn-image>"
   }
 }
 
 variable "gpu_image" {
   type = map(any)
   default = {
-//  "name"             = "vggp-gpu-v60-j16-4b8cbb05c6db-dev"
-    "name"             = "<name for that gpu image>"
-//  "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-gpu-v60-j16-4b8cbb05c6db-dev.raw"
-    "image_source_url" = "<url-to-latest-vgcn-gpu-image>"
-    // you can check for the latest image on https://usegalaxy.eu/static/vgcn/ and replace this
-    "container_format" = "bare"
-    "disk_format"      = "raw"
+//  "name"             = "vggp-v60-j225-1a1df01ec8f3-dev"
+    "name"             = "<name for that image>"
+//  "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-v60-j225-1a1df01ec8f3-dev.raw"
+    "ocid" = "<url-to-latest-vgcn-image>"
   }
 }
 

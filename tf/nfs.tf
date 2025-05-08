@@ -1,41 +1,22 @@
-resource "openstack_compute_instance_v2" "nfs-server" {
-
-  name            = "${var.name_prefix}nfs${var.name_suffix}"
-  image_id        = openstack_images_image_v2.vgcn-image.id
-  flavor_name     = var.flavors["nfs-server"]
-  key_pair        = openstack_compute_keypair_v2.my-cloud-key.name
-  security_groups = var.secgroups
-
-  network {
-    uuid = openstack_networking_network_v2.internal.id
-  }
-
-  block_device {
-    uuid                  = openstack_images_image_v2.vgcn-image.id
-    source_type           = "image"
-    destination_type      = "local"
-    boot_index            = 0
-    delete_on_termination = true
-  }
-
-  block_device {
-    uuid                  = openstack_blockstorage_volume_v3.volume_nfs_data.id
-    source_type           = "volume"
-    destination_type      = "volume"
-    boot_index            = -1
-    delete_on_termination = true
-  }
-
-  user_data = data.template_cloudinit_config.nfs-share.rendered
+# Create a block volume for NFS data
+resource "oci_core_volume" "volume_nfs_data" {
+  availability_domain = var.oracle_vars.availability_domain
+  compartment_id      = var.oracle_vars.compartment_id
+  display_name        = "${var.name_prefix}volume_nfs_data"
+  size_in_gbs         = var.nfs_disk_size
 }
 
-
-resource "openstack_blockstorage_volume_v3" "volume_nfs_data" {
-  name = "${var.name_prefix}volume_nfs_data"
-  size = var.nfs_disk_size
+# Create volume attachment to connect the block volume to the instance
+resource "oci_core_volume_attachment" "nfs_data_attachment" {
+  attachment_type = "iscsi"  # Or "paravirtualized"
+  instance_id     = oci_core_instance.nfs_server.id
+  volume_id       = oci_core_volume.volume_nfs_data.id
+  
+  depends_on      = [oci_core_instance.nfs_server]
 }
 
-data "template_cloudinit_config" "nfs-share" {
+# Cloud-init template to configure NFS
+data "template_cloudinit_config" "nfs_share" {
   gzip          = true
   base64_encode = true
 
@@ -62,8 +43,48 @@ data "template_cloudinit_config" "nfs-share" {
      - [ systemctl, enable, nfs-server ]
      - [ systemctl, start, nfs-server ]
      - [ exportfs, -avr ]
-  EOF
+    EOF
   }
+}
 
-
+# Create the NFS server instance
+resource "oci_core_instance" "nfs_server" {
+  availability_domain = var.oracle_vars.availability_domain
+  compartment_id      = var.oracle_vars.compartment_id
+  display_name        = "${var.name_prefix}nfs${var.name_suffix}"
+  
+  shape               = var.shapes["nfs-server"]
+  
+ 
+  # shape_config {
+  #   ocpus         = var.shape_config["nfs-server"]["ocpus"]
+  #   memory_in_gbs = var.shape_config["nfs-server"]["memory_in_gbs"]
+  # }
+  
+  # Reference the image using the OCID
+  source_details {
+    source_type = "image"
+    source_id   = data.oci_core_images.vgcn_image.images[0].id
+    
+  }
+  
+  # Networt
+  create_vnic_details {
+    subnet_id        = oci_core_subnet.internal.id
+    assign_public_ip = false
+    nsg_ids          = [oci_core_network_security_group.ingress_private.id, oci_core_network_security_group.egress_public]
+  }
+  
+  # SSH key configuration
+  metadata = {
+    ssh_authorized_keys = var.public_key["pubkey"]
+    user_data           = data.template_cloudinit_config.nfs_share.rendered
+  }
+  
+  # Wait for the networking resources to be created
+  depends_on = [
+    oci_core_subnet.internal
+  ]
+  
+  preserve_boot_volume = false
 }

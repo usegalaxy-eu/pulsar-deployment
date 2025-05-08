@@ -1,18 +1,25 @@
 resource "openstack_compute_instance_v2" "exec-node" {
 
   count           = var.exec_node_count
-  name            = "${var.name_prefix}exec-node-${count.index}${var.name_suffix}"
-  flavor_name     = var.flavors["exec-node"]
-  image_id        = openstack_images_image_v2.vgcn-image.id
-  key_pair        = openstack_compute_keypair_v2.my-cloud-key.name
-  security_groups = var.secgroups
-
-
-  network {
-    uuid = openstack_networking_network_v2.internal.id
+  availability_domain = var.oracle_vars.availability_domain
+  compartment_id      = var.oracle_vars.compartment_id
+  display_name            = "${var.name_prefix}exec-node-${count.index}${var.name_suffix}"
+  shape               = var.shapes["exec-node"]
+  # Reference the image using the OCID
+  source_details {
+    source_type = "image"
+    source_id   = data.oci_core_images.vgcn_image.images[0].id
+    
   }
 
+  create_vnic_details {
+    subnet_id        = oci_core_subnet.internal.id
+    assign_public_ip = true
+    nsg_ids          = [oci_core_network_security_group.ingress_private.id, oci_core_network_security_group.egress_public.id]
+  }
 
+  metadata = {
+  ssh_authorized_keys = local.ssh_public_key
   user_data = <<-EOF
     #cloud-config
     system_info:
@@ -97,4 +104,5 @@ resource "openstack_compute_instance_v2" "exec-node" {
       - [ ansible-playbook, -i, 'localhost,', /home/centos/condor.yml]
       - systemctl start condor
       EOF
+}
 }
