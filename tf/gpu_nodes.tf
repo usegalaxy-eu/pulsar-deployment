@@ -1,16 +1,24 @@
-resource "openstack_compute_instance_v2" "gpu-node" {
+resource "oci_core_instance" "gpu-node" {
 
-  count           = var.gpu_node_count
-  name            = "${var.name_prefix}gpu-node-${count.index}${var.name_suffix}"
-  flavor_name     = var.flavors["gpu-node"]
-  image_id        = openstack_images_image_v2.vgcn-image-gpu.id
-  key_pair        = openstack_compute_keypair_v2.my-cloud-key.name
-  security_groups = var.secgroups
+  count               = var.gpu_node_count
+  availability_domain = var.oracle_vars.availability_domain
+  compartment_id      = var.oracle_vars.compartment_id
+  display_name        = "${var.name_prefix}gpu-node-${count.index}${var.name_suffix}"
+  shape               = var.shapes["gpu-node"]
 
-  network {
-    uuid = openstack_networking_network_v2.internal.id
+  source_details {
+    source_type = "image"
+    source_id   = data.oci_core_images.vgcn_image_gpu.images[0].id
+    
   }
 
+  create_vnic_details {
+    subnet_id        = oci_core_subnet.internal.id
+    assign_public_ip = false
+    nsg_ids          = [oci_core_network_security_group.ingress_private.id, oci_core_network_security_group.egress_public.id]
+  }
+  metadata = {
+  ssh_authorized_keys = local.ssh_public_key
   user_data = <<-EOF
     #cloud-config
     system_info:
@@ -60,7 +68,7 @@ resource "openstack_compute_instance_v2" "gpu-node" {
       path: /etc/auto.master.d/data.autofs
       permissions: '0644'
     - content: |
-        share  -rw,hard,intr,nosuid,quota  ${openstack_compute_instance_v2.nfs-server.access_ip_v4}:/data/share
+        share  -rw,hard,intr,nosuid,quota  ${oci_core_instance.nfs-server.private_ip}:/data/share
       owner: root:root
       path: /etc/auto.data
       permissions: '0644'
@@ -75,7 +83,7 @@ resource "openstack_compute_instance_v2" "gpu-node" {
               vars:
                 condor_role: execute
                 condor_copy_template: false
-                condor_host: ${openstack_compute_instance_v2.central-manager.network.1.fixed_ip_v4}
+                condor_host: ${oci_core_instance.central-manager.private_ip}
                 condor_password: ${var.condor_pass}
 
       owner: centos:centos
@@ -93,3 +101,5 @@ resource "openstack_compute_instance_v2" "gpu-node" {
       - systemctl start condor
   EOF
 }
+}
+

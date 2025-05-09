@@ -77,7 +77,7 @@ resource "oci_core_instance" "nfs_server" {
   
   # SSH key configuration
   metadata = {
-    ssh_authorized_keys = var.public_key["pubkey"]
+    ssh_authorized_keys = local.ssh_public_key
     user_data           = data.template_cloudinit_config.nfs_share.rendered
   }
   

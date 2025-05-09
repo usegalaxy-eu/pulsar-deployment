@@ -1,9 +1,9 @@
-resource "openstack_compute_instance_v2" "exec-node" {
+resource "oci_core_instance" "exec-node" {
 
-  count           = var.exec_node_count
+  count               = var.exec_node_count
   availability_domain = var.oracle_vars.availability_domain
   compartment_id      = var.oracle_vars.compartment_id
-  display_name            = "${var.name_prefix}exec-node-${count.index}${var.name_suffix}"
+  display_name        = "${var.name_prefix}exec-node-${count.index}${var.name_suffix}"
   shape               = var.shapes["exec-node"]
   # Reference the image using the OCID
   source_details {
@@ -14,7 +14,7 @@ resource "openstack_compute_instance_v2" "exec-node" {
 
   create_vnic_details {
     subnet_id        = oci_core_subnet.internal.id
-    assign_public_ip = true
+    assign_public_ip = false
     nsg_ids          = [oci_core_network_security_group.ingress_private.id, oci_core_network_security_group.egress_public.id]
   }
 
@@ -66,7 +66,7 @@ resource "openstack_compute_instance_v2" "exec-node" {
       path: /etc/auto.master.d/data.autofs
       permissions: '0644'
     - content: |
-        share  -rw,hard,intr,nosuid,quota  ${openstack_compute_instance_v2.nfs-server.access_ip_v4}:/data/share
+        share  -rw,hard,intr,nosuid,quota  ${oci_core_instance.nfs-server.private_ip}:/data/share
       owner: root:root
       path: /etc/auto.data
       permissions: '0644'
@@ -82,7 +82,7 @@ resource "openstack_compute_instance_v2" "exec-node" {
                 htcondor_version: 10.x
                 htcondor_type_of_node: wn
                 htcondor_role_execute: true
-                htcondor_server: ${openstack_compute_instance_v2.central-manager.network.1.fixed_ip_v4}
+                htcondor_server: ${oci_core_instance.central-manager.private_ip}
                 htcondor_password: ${var.condor_pass}
           tasks:
             - name: Disable pulsar

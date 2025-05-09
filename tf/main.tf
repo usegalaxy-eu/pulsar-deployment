@@ -21,9 +21,9 @@ resource "oci_core_instance" "central_manager" {
     command = <<-EOF
       ansible-galaxy install -p ansible/roles -r ansible/requirements.yml
       sleep 450
-        ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -b -i '${self.access_ip_v4},' \
+        ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -b -i '${self.public_ip},' \
         --private-key ${var.pvt_key} --extra-vars='condor_ip_range=${var.private_network.cidr4}  
-        htcondor_server=${self.network.1.fixed_ip_v4} htcondor_password=${var.condor_pass}
+        htcondor_server=${self.private_ip} htcondor_password=${var.condor_pass}
         message_queue_url="${var.mq_string}" tf_var_check=True' -e '${jsonencode(local.norm_ex_mqs)}' \
         ansible/main.yml
     EOF
@@ -64,7 +64,7 @@ resource "oci_core_instance" "central_manager" {
       path: /etc/auto.master.d/data.autofs
       permissions: '0644'
     - content: |
-        share  -rw,hard,intr,nosuid,quota  ${openstack_compute_instance_v2.nfs-server.access_ip_v4}:/data/share
+        share  -rw,hard,intr,nosuid,quota  ${oci_core_instance.nfs-server.private_ip}:/data/share
       owner: root:root
       path: /etc/auto.data
       permissions: '0644'
