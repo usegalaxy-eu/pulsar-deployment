@@ -16,17 +16,38 @@ variable "oracle_vars" {
   
 }
 variable "nfs_disk_size" {
-  default = 100
+  default = 32
 }
 
-# Must be available in your OpenStack tenant
+# Using VM.Standard.E3.Flex
 variable "shapes" {
-  type = map(any)
+  type = map(object({
+    shape         = string
+    ocpus         = number
+    memory_in_gbs = number
+  }))
+  description = "Shapes for different instance types"
   default = {
-    "central-manager" = "m1.medium"
-    "nfs-server"      = "m1.medium"
-    "exec-node"       = "m1.xlarge"
-    "gpu-node"        = "m1.small"
+    "central-manager" = {
+      shape         = "VM.Standard.E3.Flex"
+      ocpus         = 2
+      memory_in_gbs = 16
+    },
+    "nfs-server" = {
+      shape         = "VM.Standard.E3.Flex"
+      ocpus         = 2 
+      memory_in_gbs = 32
+    },
+    "exec-node" = {
+      shape         = "VM.Standard.E3.Flex"
+      ocpus         = 4
+      memory_in_gbs = 32
+    },
+    "gpu-node" = {
+      shape         = "VM.Standard.E3.Flex"
+      ocpus         = 8
+      memory_in_gbs = 64
+    }
   }
 }
 

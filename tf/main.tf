@@ -4,6 +4,10 @@ resource "oci_core_instance" "central_manager" {
   display_name        = "${var.name_prefix}central-manager${var.name_suffix}"
   shape               = var.shapes["central-manager"]
   # Reference the image using the OCID
+   shape_config {
+    ocpus = var.shapes["central-manager"].ocpus
+    memory_in_gbs = var.shapes["central-manager"].memory_in_gbs
+  }
   source_details {
     source_type = "image"
     source_id   = data.oci_core_images.vgcn_image.images[0].id

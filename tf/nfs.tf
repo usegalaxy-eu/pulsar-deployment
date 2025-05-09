@@ -56,10 +56,10 @@ resource "oci_core_instance" "nfs_server" {
   shape               = var.shapes["nfs-server"]
   
  
-  # shape_config {
-  #   ocpus         = var.shape_config["nfs-server"]["ocpus"]
-  #   memory_in_gbs = var.shape_config["nfs-server"]["memory_in_gbs"]
-  # }
+ shape_config {
+    ocpus = var.shapes["nfs-server"].ocpus
+    memory_in_gbs = var.shapes["nfs-server"].memory_in_gbs
+  }
   
   # Reference the image using the OCID
   source_details {

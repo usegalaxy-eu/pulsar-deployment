@@ -6,6 +6,10 @@ resource "oci_core_instance" "gpu-node" {
   display_name        = "${var.name_prefix}gpu-node-${count.index}${var.name_suffix}"
   shape               = var.shapes["gpu-node"]
 
+ shape_config {
+    ocpus = var.shapes["gpu-node"].ocpus
+    memory_in_gbs = var.shapes["gpu-node"].memory_in_gbs
+  }
   source_details {
     source_type = "image"
     source_id   = data.oci_core_images.vgcn_image_gpu.images[0].id
