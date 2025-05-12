@@ -4,6 +4,11 @@
   hosts: all
 
   pre_tasks:
+    - name: Install pip dependency
+      package:
+        name: python3.11-packaging
+      become: yes
+
     - name: Install or upgrade Pulsar package
       ansible.builtin.pip:
         name: pulsar-app
