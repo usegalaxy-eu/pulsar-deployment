@@ -102,9 +102,9 @@ variable "ssh-port" {
   default = "22"
 }
 
-// Set these variables during execution terraform apply -var "pvt_key=<~/.ssh/my_private_key>" 
-// -var "condor_pass=<MyCondorPassword>" 
-// -var "condor_pass=pyamqp://<your-rabbit-mq-user>:<the-password-we-provided-to-you>@mq.galaxyproject.eu:5671//pulsar/<your-rabbit-mq-vhost>?ssl=1"
+// Set these variables during execution terraform apply -var "pvt_key=<~/.ssh/my_private_key>"
+// -var "condor_pass=<MyCondorPassword>"
+// -var "mq_string=pyamqp://<your-rabbit-mq-user>:<the-password-we-provided-to-you>@mq.galaxyproject.eu:5671//pulsar/<your-rabbit-mq-vhost>?ssl=1"
 variable "pvt_key" {}
 
 variable "condor_pass" {}
@@ -112,9 +112,9 @@ variable "condor_pass" {}
 variable "mq_string" {}
 
 // Set the extra_mq_urls variable to deploy multiple pulsar services. Leave unedited otherwise
-// Example: terraform apply -var "pvt_key=<~/.ssh/my_private_key>" 
-// -var "condor_pass=<MyCondorPassword>" 
-// -var "condor_pass=pyamqp://<your-rabbit-mq-user>:<the-password-we-provided-to-you>@mq.galaxyproject.eu:5671//pulsar/<your-rabbit-mq-vhost>?ssl=1"
+// Example: terraform apply -var "pvt_key=<~/.ssh/my_private_key>"
+// -var "condor_pass=<MyCondorPassword>"
+// -var "mq_string=pyamqp://<your-rabbit-mq-user>:<the-password-we-provided-to-you>@mq.galaxyproject.eu:5671//pulsar/<your-rabbit-mq-vhost>?ssl=1"
 // -var 'extra_mq_urls={it="pyamqp_url0", be="pyamqp_url1"}'
 
 variable "extra_mq_urls" {
@@ -132,11 +132,11 @@ variable "extra_mq_urls" {
   )
   error_message = "Extra message queues must not contain mq_string and values must be unique."
 }
-} 
+}
 
 // Pass an empty map if extra_mq_urls is unedited, otherwise wraps the map with the ansible dictionary name
 locals {
-  norm_ex_mqs = ( 
-    tomap({"name" = "value"}) == var.extra_mq_urls 
+  norm_ex_mqs = (
+    tomap({"name" = "value"}) == var.extra_mq_urls
     ) ? tomap({}) : merge(tomap({"ex_mqs_dict" = var.extra_mq_urls}))
 }
