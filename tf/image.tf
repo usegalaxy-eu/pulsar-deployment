@@ -3,7 +3,7 @@
 
 data "oci_core_images" "vgcn_image" {
   compartment_id           = var.oracle_vars.compartment_id
-  display_name             = var.image.ocid
+  display_name             = var.image.name
 
 }
 
@@ -11,6 +11,6 @@ data "oci_core_images" "vgcn_image" {
 // comment this block if the GPU image is already available or if you upload it via the dashboard interface
 data "oci_core_images" "vgcn_image_gpu" {
   compartment_id           = var.oracle_vars.compartment_id
-  display_name             = var.gpu_image.ocid
+  display_name             = var.gpu_image.name
 
 }

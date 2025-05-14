@@ -17,7 +17,7 @@ metrics_plugins_to_copy:
 # the values here depend on what you have set up in your terraform configuration
 # see: https://github.com/usegalaxy-eu/pulsar-infrastructure/blob/master/tf/vars.tf
 #
-name_prefix: "vgcn-mira-"
+name_prefix: "vgcn-oci-"
 name_suffix: ".pulsar"
 private_network_prefix: "{{ condor_ip_range }}"
 workers_group_name: "workers"
