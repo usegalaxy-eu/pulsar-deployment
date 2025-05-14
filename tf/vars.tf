@@ -96,22 +96,9 @@ variable "name_suffix" {
   default = "<.pulsar>"
 }
 
-variable "secgroups_cm" {
-  type = list(any)
-  default = [
-    "<public-ssh>",
-    "<ingress-private>",
-    "<egress-public>",
-  ]
-}
 
-variable "secgroups" {
-  type = list(any)
-  default = [
-    "<ingress-private>", //Should open at least nfs, 9618 for HTCondor and 22 for ssh
-    "<egress-public>",
-  ]
-}
+// In the case of OCI the security groups cannot be condensed with the
+// original variables used, check the secgroups.tf file to change them if needed.
 
 # Main Virtual Cloud Network
 variable "main_vcn" {
