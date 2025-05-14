@@ -14,11 +14,10 @@ resource "oci_core_instance" "central_manager" {
     
   }
   
-  # Networt
   create_vnic_details {
-    subnet_id        = oci_core_subnet.internal.id
+    subnet_id        = oci_core_subnet.public_subnet.id
     assign_public_ip = true
-    nsg_ids          = [oci_core_network_security_group.ingress_private.id, oci_core_network_security_group.egress_public.id, oci_core_network_security_group.public_ssh.id]
+
   }
 
   provisioner "local-exec" {
@@ -96,3 +95,21 @@ resource "oci_core_instance" "central_manager" {
   EOF
 }
 }
+
+resource "oci_core_vnic_attachment" "manager_private_vnic" {
+  instance_id = oci_core_instance.central_manager.id
+  display_name = "manager-internal"
+
+  create_vnic_details {
+    assign_public_ip = false
+    subnet_id        = oci_core_subnet.private_subnet.id
+  }
+
+  lifecycle {
+    replace_triggered_by = [
+      oci_core_instance.central_manager
+    ]
+  }
+
+}
+

@@ -16,13 +16,11 @@ resource "oci_core_instance" "exec-node" {
     source_id   = data.oci_core_images.vgcn_image.images[0].id
     
   }
-
   create_vnic_details {
-    subnet_id        = oci_core_subnet.internal.id
+    subnet_id        = oci_core_subnet.private_subnet.id
     assign_public_ip = false
-    nsg_ids          = [oci_core_network_security_group.ingress_private.id, oci_core_network_security_group.egress_public.id]
   }
-
+  
   metadata = {
   ssh_authorized_keys = local.ssh_public_key
   user_data = <<-EOF

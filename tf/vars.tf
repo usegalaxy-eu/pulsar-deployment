@@ -113,17 +113,26 @@ variable "secgroups" {
   ]
 }
 
-# Name of the public network that is already present in your openstack tenant
-variable "public_network" {
-  default = "<public>"
+# Main Virtual Cloud Network
+variable "main_vcn" {
+  type = map(any)
+  default = {
+    display_name        = "<vgcn-private>"
+    cidr4       = "<192.168.0.0/16>" //This is important to make HTCondor work
+}
 }
 
 variable "private_network" {
   type = map(any)
   default = {
-    name        = "<vgcn-private>"
-    subnet_name = "<vgcn-private-subnet>"
-    cidr4       = "<192.168.0.0/16>" //This is important to make HTCondor work
+    subnet_name = "<vgcn-private-subnet>" // internal private subnet
+  }
+}
+
+variable "public_network" {
+  type = map(any)
+  default = {
+    subnet_name = "<vgcn-private-subnet>" // internal private subnet
   }
 }
 

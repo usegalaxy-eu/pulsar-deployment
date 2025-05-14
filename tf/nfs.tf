@@ -68,11 +68,10 @@ resource "oci_core_instance" "nfs_server" {
     
   }
   
-  # Networt
+
   create_vnic_details {
-    subnet_id        = oci_core_subnet.internal.id
+    subnet_id        = oci_core_subnet.private_subnet.id
     assign_public_ip = false
-    nsg_ids          = [oci_core_network_security_group.ingress_private.id, oci_core_network_security_group.egress_public]
   }
   
   # SSH key configuration
