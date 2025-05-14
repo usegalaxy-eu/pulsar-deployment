@@ -8,22 +8,19 @@ resource "oci_core_volume" "volume_nfs_data" {
 
 # Create volume attachment to connect the block volume to the instance
 resource "oci_core_volume_attachment" "nfs_data_attachment" {
-  attachment_type = "iscsi"  # Or "paravirtualized"
+  attachment_type = "paravirtualized"
   instance_id     = oci_core_instance.nfs_server.id
   volume_id       = oci_core_volume.volume_nfs_data.id
-  
-  depends_on      = [oci_core_instance.nfs_server]
 }
 
 # Cloud-init template to configure NFS
+locals {
+  create_share = file("${path.module}/files/create_share.sh")
+}
+
 data "template_cloudinit_config" "nfs_share" {
   gzip          = true
   base64_encode = true
-
-  part {
-    content_type = "text/x-shellscript"
-    content      = file("${path.module}/files/create_share.sh")
-  }
 
   part {
     content_type = "text/cloud-config"
@@ -35,11 +32,17 @@ data "template_cloudinit_config" "nfs_share" {
       owner: root:root
       path: /etc/exports
       permissions: '0644'
+    - content: |
+        ${local.create_share}
+      owner: root:root
+      path: /etc/create_share.sh
+      permissions: '0754'
 
     runcmd:
      - [ sh, -xc, "sed -i 's|nameserver 10.0.2.3||g' /etc/resolv.conf" ]
      - [ firewall-cmd, --permanent, --add-port=2049/tcp ]
      - [ firewall-cmd, --reload ]
+     - [ bash, /etc/create_share.sh ]
      - [ systemctl, enable, nfs-server ]
      - [ systemctl, start, nfs-server ]
      - [ exportfs, -avr ]
@@ -53,7 +56,7 @@ resource "oci_core_instance" "nfs_server" {
   compartment_id      = var.oracle_vars.compartment_id
   display_name        = "${var.name_prefix}nfs${var.name_suffix}"
   shape               = var.shapes["nfs-server"].shape
-  
+  depends_on          = [ oci_core_subnet.private_subnet, oci_core_volume.volume_nfs_data ]
  
  shape_config {
     ocpus = var.shapes["nfs-server"].ocpus
@@ -71,7 +74,6 @@ resource "oci_core_instance" "nfs_server" {
     source_id   = data.oci_core_images.vgcn_image.images[0].id
     
   }
-  
 
   create_vnic_details {
     subnet_id        = oci_core_subnet.private_subnet.id
@@ -83,11 +85,6 @@ resource "oci_core_instance" "nfs_server" {
     ssh_authorized_keys = local.ssh_public_key
     user_data           = data.template_cloudinit_config.nfs_share.rendered
   }
-  
-  # Wait for the networking resources to be created
-  depends_on = [
-    oci_core_subnet.internal
-  ]
   
   preserve_boot_volume = false
 }
