@@ -40,7 +40,7 @@ resource "oci_core_instance" "central_manager" {
 
   metadata = {
   ssh_authorized_keys = local.ssh_public_key
-  user_data = <<-EOF
+  user_data = base64encode(<<EOF
     #cloud-config
     system_info:
       default_user:
@@ -73,7 +73,7 @@ resource "oci_core_instance" "central_manager" {
       path: /etc/auto.master.d/data.autofs
       permissions: '0644'
     - content: |
-        share  -rw,hard,intr,nosuid,quota  ${oci_core_instance.nfs-server.private_ip}:/data/share
+        share  -rw,hard,intr,nosuid,quota  ${oci_core_instance.nfs_server.private_ip}:/data/share
       owner: root:root
       path: /etc/auto.data
       permissions: '0644'
@@ -99,6 +99,7 @@ resource "oci_core_instance" "central_manager" {
       - [ sh, -xc, "sed -i 's|localhost.localdomain|$(hostname -f)|g' /etc/telegraf/telegraf.conf" ]
       - systemctl restart telegraf
   EOF
+  )
 }
 }
 

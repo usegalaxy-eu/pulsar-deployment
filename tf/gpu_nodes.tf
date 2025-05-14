@@ -28,7 +28,7 @@ resource "oci_core_instance" "gpu-node" {
 
   metadata = {
   ssh_authorized_keys = local.ssh_public_key
-  user_data = <<-EOF
+  user_data = base64encode(<<EOF
     #cloud-config
     system_info:
       default_user:
@@ -77,7 +77,7 @@ resource "oci_core_instance" "gpu-node" {
       path: /etc/auto.master.d/data.autofs
       permissions: '0644'
     - content: |
-        share  -rw,hard,intr,nosuid,quota  ${oci_core_instance.nfs-server.private_ip}:/data/share
+        share  -rw,hard,intr,nosuid,quota  ${oci_core_instance.nfs_server.private_ip}:/data/share
       owner: root:root
       path: /etc/auto.data
       permissions: '0644'
@@ -92,7 +92,7 @@ resource "oci_core_instance" "gpu-node" {
               vars:
                 condor_role: execute
                 condor_copy_template: false
-                condor_host: ${oci_core_instance.central-manager.private_ip}
+                condor_host: ${oci_core_instance.central_manager.private_ip}
                 condor_password: ${var.condor_pass}
 
       owner: centos:centos
@@ -109,6 +109,7 @@ resource "oci_core_instance" "gpu-node" {
       - [ ansible-playbook, -i, 'localhost,', /home/centos/condor.yml]
       - systemctl start condor
   EOF
+  )
 }
 }
 

@@ -27,7 +27,7 @@ data "template_cloudinit_config" "nfs_share" {
 
   part {
     content_type = "text/cloud-config"
-    content      = <<-EOF
+    content      = <<EOF
     #cloud-config
     write_files:
     - content: |
@@ -64,7 +64,7 @@ resource "oci_core_instance" "nfs_server" {
     network_type     = "PARAVIRTUALIZED"
     boot_volume_type = "PARAVIRTUALIZED"
     }
-    
+
   # Reference the image using the OCID
   source_details {
     source_type = "image"

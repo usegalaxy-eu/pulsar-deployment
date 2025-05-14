@@ -29,7 +29,7 @@ resource "oci_core_instance" "exec-node" {
 
   metadata = {
   ssh_authorized_keys = local.ssh_public_key
-  user_data = <<-EOF
+  user_data = base64encode(<<EOF
     #cloud-config
     system_info:
       default_user:
@@ -75,7 +75,7 @@ resource "oci_core_instance" "exec-node" {
       path: /etc/auto.master.d/data.autofs
       permissions: '0644'
     - content: |
-        share  -rw,hard,intr,nosuid,quota  ${oci_core_instance.nfs-server.private_ip}:/data/share
+        share  -rw,hard,intr,nosuid,quota  ${oci_core_instance.nfs_server.private_ip}:/data/share
       owner: root:root
       path: /etc/auto.data
       permissions: '0644'
@@ -91,7 +91,7 @@ resource "oci_core_instance" "exec-node" {
                 htcondor_version: 10.x
                 htcondor_type_of_node: wn
                 htcondor_role_execute: true
-                htcondor_server: ${oci_core_instance.central-manager.private_ip}
+                htcondor_server: ${oci_core_instance.central_manager.private_ip}
                 htcondor_password: ${var.condor_pass}
           tasks:
             - name: Disable pulsar
@@ -113,5 +113,6 @@ resource "oci_core_instance" "exec-node" {
       - [ ansible-playbook, -i, 'localhost,', /home/centos/condor.yml]
       - systemctl start condor
       EOF
+  )
 }
 }
