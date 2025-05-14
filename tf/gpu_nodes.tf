@@ -4,7 +4,7 @@ resource "oci_core_instance" "gpu-node" {
   availability_domain = var.oracle_vars.availability_domain
   compartment_id      = var.oracle_vars.compartment_id
   display_name        = "${var.name_prefix}gpu-node-${count.index}${var.name_suffix}"
-  shape               = var.shapes["gpu-node"]
+  shape               = var.shapes["gpu-node"].shape
 
  shape_config {
     ocpus = var.shapes["gpu-node"].ocpus
@@ -16,12 +16,16 @@ resource "oci_core_instance" "gpu-node" {
     
   }
 
+ launch_options {
+    network_type     = "PARAVIRTUALIZED"
+    boot_volume_type = "PARAVIRTUALIZED"
+    }
 
   create_vnic_details {
     subnet_id        = oci_core_subnet.private_subnet.id
     assign_public_ip = false
   }
-  
+
   metadata = {
   ssh_authorized_keys = local.ssh_public_key
   user_data = <<-EOF

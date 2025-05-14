@@ -4,13 +4,19 @@ resource "oci_core_instance" "exec-node" {
   availability_domain = var.oracle_vars.availability_domain
   compartment_id      = var.oracle_vars.compartment_id
   display_name        = "${var.name_prefix}exec-node-${count.index}${var.name_suffix}"
-  shape               = var.shapes["exec-node"]
-  # Reference the image using the OCID
+  shape               = var.shapes["exec-node"].shape
 
+  # Reference the image using the OCID
  shape_config {
     ocpus = var.shapes["exec-node"].ocpus
     memory_in_gbs = var.shapes["exec-node"].memory_in_gbs
   }
+
+ launch_options {
+    network_type     = "PARAVIRTUALIZED"
+    boot_volume_type = "PARAVIRTUALIZED"
+    }
+
   source_details {
     source_type = "image"
     source_id   = data.oci_core_images.vgcn_image.images[0].id
@@ -20,7 +26,7 @@ resource "oci_core_instance" "exec-node" {
     subnet_id        = oci_core_subnet.private_subnet.id
     assign_public_ip = false
   }
-  
+
   metadata = {
   ssh_authorized_keys = local.ssh_public_key
   user_data = <<-EOF

@@ -2,7 +2,8 @@ resource "oci_core_instance" "central_manager" {
   availability_domain = var.oracle_vars.availability_domain
   compartment_id      = var.oracle_vars.compartment_id
   display_name        = "${var.name_prefix}central-manager${var.name_suffix}"
-  shape               = var.shapes["central-manager"]
+  shape               = var.shapes["central-manager"].shape
+
   # Reference the image using the OCID
    shape_config {
     ocpus = var.shapes["central-manager"].ocpus
@@ -14,6 +15,11 @@ resource "oci_core_instance" "central_manager" {
     
   }
   
+ launch_options {
+    network_type     = "PARAVIRTUALIZED" # Use VirtIO drivers, like openstack
+    boot_volume_type = "PARAVIRTUALIZED"
+    }
+
   create_vnic_details {
     subnet_id        = oci_core_subnet.public_subnet.id
     assign_public_ip = true
