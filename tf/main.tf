@@ -26,18 +26,6 @@ resource "oci_core_instance" "central_manager" {
 
   }
 
-  provisioner "local-exec" {
-    command = <<-EOF
-      ansible-galaxy install -p ansible/roles -r ansible/requirements.yml
-      sleep 450
-        ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -b -i '${self.public_ip},' \
-        --private-key ${var.pvt_key} --extra-vars='condor_ip_range=${var.private_network.cidr4}  
-        htcondor_server=${self.private_ip} htcondor_password=${var.condor_pass}
-        message_queue_url="${var.mq_string}" tf_var_check=True' -e '${jsonencode(local.norm_ex_mqs)}' \
-        ansible/main.yml
-    EOF
-  }
-
   metadata = {
   ssh_authorized_keys = local.ssh_public_key
   user_data = base64encode(<<EOF
@@ -120,3 +108,22 @@ resource "oci_core_vnic_attachment" "manager_private_vnic" {
 
 }
 
+resource "null_resource" "provision_central_manager" {
+  lifecycle {
+    replace_triggered_by = [
+      oci_core_instance.central_manager
+    ]
+  }
+  provisioner "local-exec" {
+    command = <<-EOF
+      ansible-galaxy install -p ansible/roles -r ansible/requirements.yml
+      sleep 450
+        ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -b -i '${oci_core_instance.central_manager.public_ip},' \
+        --private-key ${var.pvt_key} --extra-vars='condor_ip_range=${oci_core_subnet.private_subnet.cidr_block}  
+        htcondor_server=${oci_core_instance.central_manager.private_ip} htcondor_password=${var.condor_pass}
+        message_queue_url="${var.mq_string}" tf_var_check=True' -e '${jsonencode(local.norm_ex_mqs)}' \
+        ansible/main.yml
+    EOF
+  }
+
+}
