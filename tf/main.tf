@@ -23,7 +23,10 @@ resource "oci_core_instance" "central_manager" {
   create_vnic_details {
     subnet_id        = oci_core_subnet.public_subnet.id
     assign_public_ip = true
-
+    nsg_ids          = [ 
+                       oci_core_network_security_group.cm_egress_public.id,
+                       oci_core_network_security_group.public_ssh.id
+                       ] 
   }
 
   metadata = {
@@ -98,8 +101,11 @@ resource "oci_core_vnic_attachment" "manager_private_vnic" {
   create_vnic_details {
     assign_public_ip = false
     subnet_id        = oci_core_subnet.private_subnet.id
+    nsg_ids          = [ 
+                       oci_core_network_security_group.cm_ingress_private.id, 
+                       oci_core_network_security_group.cm_egress_public.id
+                       ] 
   }
-
   lifecycle {
     replace_triggered_by = [
       oci_core_instance.central_manager

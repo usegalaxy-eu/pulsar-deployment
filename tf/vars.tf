@@ -97,8 +97,22 @@ variable "name_suffix" {
 }
 
 
-// In the case of OCI the security groups cannot be condensed with the
-// original variables used, check the secgroups.tf file to change them if needed.
+variable "secgroups_cm" {
+  type = map(any)
+  default = {
+    ssh_name    = "<public-ssh>",
+    in_pvt_name = "<ingress-private>",
+    en_pub_name = "<egress-public>",
+  }
+}
+
+variable "secgroups" {
+  type = map(any)
+  default = {
+    in_pvt_name = "<ingress-private>", //Should open at least nfs, 9618 for HTCondor and 22 for ssh
+    en_pub_name = "<egress-public>",
+  }
+}
 
 # Main Virtual Cloud Network
 variable "main_vcn" {

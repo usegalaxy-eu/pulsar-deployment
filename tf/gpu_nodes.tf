@@ -24,6 +24,10 @@ resource "oci_core_instance" "gpu-node" {
   create_vnic_details {
     subnet_id        = oci_core_subnet.private_subnet.id
     assign_public_ip = false
+    nsg_ids          = [ 
+                       oci_core_network_security_group.ingress_private.id, 
+                       oci_core_network_security_group.egress_public.id
+                       ] 
   }
 
   metadata = {
