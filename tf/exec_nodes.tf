@@ -44,6 +44,6 @@ resource "oci_core_instance" "exec-node" {
 
   metadata = {
   ssh_authorized_keys = local.ssh_public_key
-  user_data = base64encode(base64encode(local.exec_user_data))
+  user_data = base64encode(local.exec_user_data)
 }
 }
