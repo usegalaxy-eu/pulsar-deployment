@@ -2,8 +2,20 @@
 - name: Install HTCondor Central Manager on Pulsar
   become: yes
   hosts: all
+  gather_facts: false
 
   pre_tasks:
+    - name: Wait for SSH to be ready
+      ansible.builtin.wait_for_connection:
+        delay: 60
+        timeout: 600
+        connect_timeout: 5
+        sleep: 60
+      when: tf_var_check | default(false)
+
+    - name: Gather Facts
+      ansible.builtin.setup:
+    
     - name: Install or upgrade Pulsar package
       ansible.builtin.pip:
         name: pulsar-app

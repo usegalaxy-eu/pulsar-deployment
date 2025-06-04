@@ -74,7 +74,6 @@ resource "null_resource" "provision_central_manager" {
   provisioner "local-exec" {
     command = <<-EOF
       ansible-galaxy install -p ansible/roles -r ansible/requirements.yml
-      sleep 450
         ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -b -i '${oci_core_instance.central_manager.public_ip},' \
         --private-key ${var.pvt_key} --extra-vars='condor_ip_range=${oci_core_subnet.private_subnet.cidr_block}  
         htcondor_server=${oci_core_instance.central_manager.private_ip} htcondor_password=${var.condor_pass}

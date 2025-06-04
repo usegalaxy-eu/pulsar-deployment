@@ -7,7 +7,6 @@ write_files:
     permissions: '0644'
   - content: |
       #!/bin/bash
-      sleep 300
       while [ ! -b /dev/sdb ]; do
         echo "Waiting for /dev/sdb..."
         sleep 2
