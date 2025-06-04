@@ -63,9 +63,8 @@ variable "gpu_node_count" {
 variable "image" {
   type = map(any)
   default = {
-//  "name"             = "vggp-v60-j225-1a1df01ec8f3-dev"
     "name"             = "<name for that image>"
-//  "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-v60-j225-1a1df01ec8f3-dev.raw"
+// cpu image source url: https://usegalaxy.eu/static/vgcn/vgcn~rockylinux-9-latest-x86_64~%2Bgeneric%2Bworkers%2Bexternal~20250604~28332~pxe~b3a17c9.raw
     "ocid" = "<url-to-latest-vgcn-image>"
   }
 }
@@ -75,7 +74,7 @@ variable "gpu_image" {
   default = {
 //  "name"             = "vggp-v60-j225-1a1df01ec8f3-dev"
     "name"             = "<name for that image>"
-//  "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-v60-j225-1a1df01ec8f3-dev.raw"
+//  gpu image source url: https://usegalaxy.eu/static/vgcn/vggp-v60-j225-1a1df01ec8f3-dev.raw
     "ocid" = "<url-to-latest-vgcn-image>"
   }
 }
@@ -153,7 +152,7 @@ variable "mq_string" {}
 // Set the extra_mq_urls variable to deploy multiple pulsar services. Leave unedited otherwise
 // Example: terraform apply -var "pvt_key=<~/.ssh/my_private_key>" 
 // -var "condor_pass=<MyCondorPassword>" 
-// -var "condor_pass=pyamqp://<your-rabbit-mq-user>:<the-password-we-provided-to-you>@mq.galaxyproject.eu:5671//pulsar/<your-rabbit-mq-vhost>?ssl=1"
+// -var "mq_string=pyamqp://<your-rabbit-mq-user>:<the-password-we-provided-to-you>@mq.galaxyproject.eu:5671//pulsar/<your-rabbit-mq-vhost>?ssl=1"
 // -var 'extra_mq_urls={it="pyamqp_url0", be="pyamqp_url1"}'
 
 variable "extra_mq_urls" {
@@ -171,11 +170,11 @@ variable "extra_mq_urls" {
   )
   error_message = "Extra message queues must not contain mq_string and values must be unique."
 }
-} 
+}
 
 // Pass an empty map if extra_mq_urls is unedited, otherwise wraps the map with the ansible dictionary name
 locals {
   norm_ex_mqs = ( 
-    tomap({"name" = "value"}) == var.extra_mq_urls 
+    tomap({"name" = "value"}) == var.extra_mq_urls
     ) ? tomap({}) : merge(tomap({"ex_mqs_dict" = var.extra_mq_urls}))
 }
