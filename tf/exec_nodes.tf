@@ -72,7 +72,7 @@ resource "openstack_compute_instance_v2" "exec-node" {
           roles:
             - name: ansible-htcondor-grycap
               vars:
-                htcondor_version: 23.x
+                htcondor_version: 24.x
                 htcondor_type_of_node: wn
                 htcondor_role_execute: true
                 htcondor_server: ${openstack_compute_instance_v2.central-manager.network.1.fixed_ip_v4}

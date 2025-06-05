@@ -38,7 +38,7 @@
   roles:
     - role: ansible-htcondor-grycap
       vars:
-        htcondor_version: "23.x"
+        htcondor_version: "24.x"
         htcondor_type_of_node: "front"
         htcondor_role_manager: true
         htcondor_role_submit: true
