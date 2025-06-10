@@ -16,7 +16,6 @@ resource "openstack_compute_instance_v2" "central-manager" {
   provisioner "local-exec" {
     command = <<-EOF
       ansible-galaxy install -p ansible/roles -r ansible/requirements.yml
-      sleep 450
         ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u centos -b -i '${self.access_ip_v4},' \
         --private-key ${var.pvt_key} --extra-vars='condor_ip_range=${var.private_network.cidr4}  
         htcondor_server=${self.network.1.fixed_ip_v4} htcondor_password=${var.condor_pass}
