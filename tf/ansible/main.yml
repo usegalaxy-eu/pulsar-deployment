@@ -15,7 +15,7 @@
 
     - name: Gather Facts
       ansible.builtin.setup:
-    
+
     - name: Install or upgrade Pulsar package
       ansible.builtin.pip:
         name: pulsar-app
