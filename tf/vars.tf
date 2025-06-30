@@ -1,18 +1,53 @@
 // Change this file according to your cloud infrastructure and personal settings
 // All variables in < > should be checked and personalized
 
+
+variable "oracle_vars" {
+  type = map (any)
+  default = {
+    tenancy_ocid = "<fill-in-with-your-data>"
+    user_ocid = "<fill-in-with-your-data>"
+    fingerprint = "<fill-in-with-your-data>"
+    private_key_path = "<fill-in-with-your-data>"
+    region = "<fill-in-with-your-data>"
+    availability_domain = "<fill-in-with-your-data>"
+    compartment_id = "<fill-in-with-your-data>"
+  }
+  
+}
 variable "nfs_disk_size" {
   default = 32
 }
 
-# Must be available in your OpenStack tenant
-variable "flavors" {
-  type = map(any)
+# Using VM.Standard.E3.Flex
+variable "shapes" {
+  type = map(object({
+    shape         = string
+    ocpus         = number
+    memory_in_gbs = number
+  }))
+  description = "Shapes for different instance types"
   default = {
-    "central-manager" = "m1.medium"
-    "nfs-server"      = "m1.medium"
-    "exec-node"       = "m1.xlarge"
-    "gpu-node"        = "m1.small"
+    "central-manager" = {
+      shape         = "VM.Standard.E3.Flex"
+      ocpus         = 2
+      memory_in_gbs = 16
+    },
+    "nfs-server" = {
+      shape         = "VM.Standard.E3.Flex"
+      ocpus         = 2 
+      memory_in_gbs = 32
+    },
+    "exec-node" = {
+      shape         = "VM.Standard.E3.Flex"
+      ocpus         = 4
+      memory_in_gbs = 32
+    },
+    "gpu-node" = {
+      shape         = "VM.Standard.E3.Flex"
+      ocpus         = 8
+      memory_in_gbs = 64
+    }
   }
 }
 
@@ -28,26 +63,19 @@ variable "gpu_node_count" {
 variable "image" {
   type = map(any)
   default = {
-//  "name"             = "vgcn-rockylinux-9-generic-workers-external~20250604~28332~pxe~b3a17c9"
     "name"             = "<name for that image>"
-//  "image_source_url" = "https://usegalaxy.eu/static/vgcn/vgcn~rockylinux-9-latest-x86_64~%2Bgeneric%2Bworkers%2Bexternal~20250604~28332~pxe~b3a17c9.raw"
-    "image_source_url" = "<url-to-latest-vgcn-image>"
-    // you can check for the latest image on https://usegalaxy.eu/static/vgcn/ and replace this
-    "container_format" = "bare"
-    "disk_format"      = "raw"
+// cpu image source url: https://usegalaxy.eu/static/vgcn/vgcn~rockylinux-9-latest-x86_64~%2Bgeneric%2Bworkers%2Bexternal~20250604~28332~pxe~b3a17c9.raw
+    "ocid" = "<url-to-latest-vgcn-image>"
   }
 }
 
 variable "gpu_image" {
   type = map(any)
   default = {
-//  "name"             = "vggp-gpu-v60-j16-4b8cbb05c6db-dev"
-    "name"             = "<name for that gpu image>"
-//  "image_source_url" = "https://usegalaxy.eu/static/vgcn/vggp-gpu-v60-j16-4b8cbb05c6db-dev.raw"
-    "image_source_url" = "<url-to-latest-vgcn-gpu-image>"
-    // you can check for the latest image on https://usegalaxy.eu/static/vgcn/ and replace this
-    "container_format" = "bare"
-    "disk_format"      = "raw"
+//  "name"             = "vggp-v60-j225-1a1df01ec8f3-dev"
+    "name"             = "<name for that image>"
+//  gpu image source url: https://usegalaxy.eu/static/vgcn/vggp-v60-j225-1a1df01ec8f3-dev.raw
+    "ocid" = "<url-to-latest-vgcn-image>"
   }
 }
 
@@ -67,34 +95,44 @@ variable "name_suffix" {
   default = "<.pulsar>"
 }
 
+
 variable "secgroups_cm" {
-  type = list(any)
-  default = [
-    "<public-ssh>",
-    "<ingress-private>",
-    "<egress-public>",
-  ]
+  type = map(any)
+  default = {
+    ssh_name    = "<public-ssh>",
+    in_pvt_name = "<ingress-private>",
+    en_pub_name = "<egress-public>",
+  }
 }
 
 variable "secgroups" {
-  type = list(any)
-  default = [
-    "<ingress-private>", //Should open at least nfs, 9618 for HTCondor and 22 for ssh
-    "<egress-public>",
-  ]
+  type = map(any)
+  default = {
+    in_pvt_name = "<ingress-private>", //Should open at least nfs, 9618 for HTCondor and 22 for ssh
+    en_pub_name = "<egress-public>",
+  }
 }
 
-# Name of the public network that is already present in your openstack tenant
-variable "public_network" {
-  default = "<public>"
+# Main Virtual Cloud Network
+variable "main_vcn" {
+  type = map(any)
+  default = {
+    display_name        = "<vgcn-private>"
+    cidr4       = "<192.168.0.0/16>" //This is important to make HTCondor work
+}
 }
 
 variable "private_network" {
   type = map(any)
   default = {
-    name        = "<vgcn-private>"
-    subnet_name = "<vgcn-private-subnet>"
-    cidr4       = "<192.168.0.0/16>" //This is important to make HTCondor work
+    subnet_name = "<vgcn-private-subnet>" // internal private subnet
+  }
+}
+
+variable "public_network" {
+  type = map(any)
+  default = {
+    subnet_name = "<vgcn-private-subnet>" // internal private subnet
   }
 }
 

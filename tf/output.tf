@@ -1,11 +1,14 @@
 output "node_name" {
-  value = openstack_compute_instance_v2.central-manager.name
+  value       = oci_core_instance.central_manager.display_name
+  description = "The name of the central manager node"
 }
 
-output "ip_v4_internal" {
-  value = openstack_compute_instance_v2.central-manager.network.1.fixed_ip_v4
+output "cm_ip_v4_internal" {
+  value       = oci_core_instance.central_manager.private_ip
+  description = "The private/internal IPv4 address of the central manager"
 }
 
-output "ip_v4_public" {
-  value = openstack_compute_instance_v2.central-manager.access_ip_v4
+output "cm_ip_v4_public" {
+  value       = oci_core_instance.central_manager.public_ip
+  description = "The public IPv4 address of the central manager"
 }

@@ -1,0 +1,30 @@
+#cloud-config
+write_files:
+  - content: |
+      /data/share *(rw,sync)
+    owner: root:root
+    path: /etc/exports
+    permissions: '0644'
+  - content: |
+      #!/bin/bash
+      while [ ! -b /dev/sdb ]; do
+        echo "Waiting for /dev/sdb..."
+        sleep 2
+      done
+      mkfs -t xfs /dev/sdb
+      mkdir -p /data/share
+      echo "/dev/sdb  /data/share xfs defaults,nofail 0 2" >> /etc/fstab
+      mount /data/share
+      chown pulsar:pulsar -R /data/share
+    owner: root:root
+    path: /etc/create_share.sh
+    permissions: '0754'
+
+runcmd:
+  - [ sh, -xc, "sed -i 's|nameserver 10.0.2.3||g' /etc/resolv.conf" ]
+  - [ firewall-cmd, --permanent, --add-port=2049/tcp ]
+  - [ firewall-cmd, --reload ]
+  - [ bash, /etc/create_share.sh ]
+  - [ systemctl, enable, nfs-server ]
+  - [ systemctl, start, nfs-server ]
+  - [ exportfs, -avr ]

@@ -1,100 +1,49 @@
-resource "openstack_compute_instance_v2" "exec-node" {
+locals {
+  exec_user_data = templatefile(
+    "${path.module}/cloud_init_templates/exec_cloud_init.yaml.tftpl",
+    {
+      nfs_ip = oci_core_instance.nfs_server.private_ip
+      cm_ip       = oci_core_instance.central_manager.private_ip
+      condor_pass = var.condor_pass
+    }
+  )
+}
 
-  count           = var.exec_node_count
-  name            = "${var.name_prefix}exec-node-${count.index}${var.name_suffix}"
-  flavor_name     = var.flavors["exec-node"]
-  image_id        = openstack_images_image_v2.vgcn-image.id
-  key_pair        = openstack_compute_keypair_v2.my-cloud-key.name
-  security_groups = var.secgroups
+resource "oci_core_instance" "exec-node" {
 
+  count               = var.exec_node_count
+  availability_domain = var.oracle_vars.availability_domain
+  compartment_id      = var.oracle_vars.compartment_id
+  display_name        = "${var.name_prefix}exec-node-${count.index}${var.name_suffix}"
+  shape               = var.shapes["exec-node"].shape
 
-  network {
-    uuid = openstack_networking_network_v2.internal.id
+  # Reference the image using the OCID
+ shape_config {
+    ocpus = var.shapes["exec-node"].ocpus
+    memory_in_gbs = var.shapes["exec-node"].memory_in_gbs
   }
 
+ launch_options {
+    network_type     = "PARAVIRTUALIZED"
+    boot_volume_type = "PARAVIRTUALIZED"
+    }
 
-  user_data = <<-EOF
-    #cloud-config
-    system_info:
-      default_user:
-        name: centos
-        gecos: RHEL Cloud User
-        groups: [wheel, adm, systemd-journal]
-        sudo: ["ALL=(ALL) NOPASSWD:ALL"]
-        shell: /bin/bash
-      distro: rhel
-      paths:
-        cloud_dir: /var/lib/cloud
-        templates_dir: /etc/cloud/templates
-      ssh_svcname: sshd
-    write_files:
-    - content: |
-        ALLOW_WRITE = *
-        ALLOW_READ = $(ALLOW_WRITE)
-        ALLOW_ADMINISTRATOR = *
-        ALLOW_NEGOTIATOR = $(ALLOW_ADMINISTRATOR)
-        ALLOW_CONFIG = $(ALLOW_ADMINISTRATOR)
-        ALLOW_DAEMON = $(ALLOW_ADMINISTRATOR)
-        ALLOW_OWNER = $(ALLOW_ADMINISTRATOR)
-        ALLOW_CLIENT = *
-        DAEMON_LIST = MASTER, SCHEDD, STARTD
-        FILESYSTEM_DOMAIN = vgcn
-        UID_DOMAIN = vgcn
-        TRUST_UID_DOMAIN = True
-        SOFT_UID_DOMAIN = True
-        # run with partitionable slots
-        CLAIM_PARTITIONABLE_LEFTOVERS = True
-        NUM_SLOTS = 1
-        NUM_SLOTS_TYPE_1 = 1
-        SLOT_TYPE_1 = 100%
-        SLOT_TYPE_1_PARTITIONABLE = True
-        ALLOW_PSLOT_PREEMPTION = False
-        STARTD.PROPORTIONAL_SWAP_ASSIGNMENT = True
-      owner: root:root
-      path: /etc/condor/condor_config.local
-      permissions: '0644'
-    - content: |
-        /data           /etc/auto.data          nfsvers=3
-      owner: root:root
-      path: /etc/auto.master.d/data.autofs
-      permissions: '0644'
-    - content: |
-        share  -rw,hard,intr,nosuid,quota  ${openstack_compute_instance_v2.nfs-server.access_ip_v4}:/data/share
-      owner: root:root
-      path: /etc/auto.data
-      permissions: '0644'
-    - content: |
-        ---
-        - name: Install HTCondor Central Manager on Pulsar
-          become: yes
-          hosts: all
-          connection: local
-          roles:
-            - name: ansible-htcondor-grycap
-              vars:
-                htcondor_version: 24.x
-                htcondor_type_of_node: wn
-                htcondor_role_execute: true
-                htcondor_server: ${openstack_compute_instance_v2.central-manager.network.1.fixed_ip_v4}
-                htcondor_password: ${var.condor_pass}
-          tasks:
-            - name: Disable pulsar
-              systemd:
-                name: pulsar
-                state: stopped 
+  source_details {
+    source_type = "image"
+    source_id   = data.oci_core_images.vgcn_image.images[0].id
+    
+  }
+  create_vnic_details {
+    subnet_id        = oci_core_subnet.private_subnet.id
+    assign_public_ip = false
+    nsg_ids          = [ 
+                       oci_core_network_security_group.ingress_private.id, 
+                       oci_core_network_security_group.egress_public.id
+                       ] 
+  }
 
-      owner: centos:centos
-      path: /home/centos/condor.yml
-      permissions: '0644'
-    packages: 
-      - ansible
-    runcmd:
-      - [ sh, -xc, "sed -i 's|nameserver 10.0.2.3||g' /etc/resolv.conf" ]
-      - [ sh, -xc, "sed -i 's|localhost.localdomain|$(hostname -f)|g' /etc/telegraf/telegraf.conf" ]
-      - systemctl restart telegraf
-      - [ python3, -m, pip, install, ansible ]
-      - [ ansible-galaxy, install, -p, /home/centos/roles, "git+https://github.com/usegalaxy-eu/ansible-htcondor-grycap.git"]
-      - [ ansible-playbook, -i, 'localhost,', /home/centos/condor.yml]
-      - systemctl start condor
-      EOF
+  metadata = {
+  ssh_authorized_keys = local.ssh_public_key
+  user_data = base64encode(local.exec_user_data)
+}
 }
