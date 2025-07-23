@@ -9,6 +9,7 @@ resource "openstack_networking_subnet_v2" "internal" {
   cidr        = var.private_network["cidr4"]
   ip_version  = 4
   enable_dhcp = true
+  dns_nameservers = ["1.1.1.1","1.0.0.1","8.8.8.8"]
 }
 
 resource "openstack_networking_router_v2" "router_1" {
